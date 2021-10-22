@@ -1,4 +1,7 @@
 #include "CMatrix4.h"
+#include <conio.h>
+
+bool m_bExit = false;
 
 /// <summary>
 /// Main Implementation Function
@@ -12,4 +15,24 @@ int main()
 
 	// Main Returns NULL
 	return NULL;
+}
+
+unsigned GetKeyboardInput()
+{
+	unsigned input;
+	input = _getch();
+	return input;
+}
+
+void Update()
+{
+	while (!m_bExit)
+	{
+		
+	}
+}
+
+void Render()
+{
+	std::cout << 
 }

@@ -33,6 +33,53 @@ public:
         }
     }
 
+    inline CMatrix4& SetZero()
+    {
+        int i = 0;
+        int j = 0;
+
+        for (i = 0; i < 4; i++)
+        {
+            for (j = 0; j < 4; j++)
+            {
+                m_Data[i][j] = 0;
+            }
+        }
+
+        return *this;
+    }
+
+    inline CMatrix4& SetAsUnitMatrix()
+    {
+        int i = 0;
+        int j = 0;
+
+        for (i = 0; i < 4; i++)
+        {
+            for (j = 0; j < 4; j++)
+            {
+                m_Data[i][j] = 0;
+            }
+        }
+
+        return *this;
+    }
+
+    inline CMatrix4& SetAsLinear()
+    {
+        SetZero();
+
+        int i = 0;
+        int j = 0;
+
+        for (i = 0; i < 4; i++)
+        {
+            m_Data[i][i] = 1;
+        }
+
+        return *this;
+    }
+
     inline float& operator () (int _row, int _column)
     {
         return m_Data[_row][_column];
