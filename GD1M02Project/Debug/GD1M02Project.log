@@ -1,7 +1,1 @@
-﻿  main.cpp
-C:\Users\trand\Desktop\GD1M02Project\CMatrix4.h(16,34): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\trand\Desktop\GD1M02Project\main.cpp(187,3): warning C4065: switch statement contains 'default' but no 'case' labels
-C:\Users\trand\Desktop\GD1M02Project\main.cpp(216,3): warning C4065: switch statement contains 'default' but no 'case' labels
-C:\Users\trand\Desktop\GD1M02Project\main.cpp(245,3): warning C4065: switch statement contains 'default' but no 'case' labels
-C:\Users\trand\Desktop\GD1M02Project\main.cpp(274,3): warning C4065: switch statement contains 'default' but no 'case' labels
-  GD1M02Project.vcxproj -> C:\Users\trand\Desktop\GD1M02Project\Debug\GD1M02Project.exe
+﻿  GD1M02Project.vcxproj -> C:\Users\trand\Documents\GITHUB\GD1M02-Matrix_Calculator\GD1M02Project\Debug\GD1M02Project.exe
