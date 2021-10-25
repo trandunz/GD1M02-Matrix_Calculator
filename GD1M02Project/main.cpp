@@ -701,22 +701,7 @@ void ProcessBToIdentity(HWND& _hwnd, WPARAM& _wparam)
 	{
 		matrixB.SetAsLinear();
 
-		WriteToEditBox(_hwnd, IDC_EDIT_B11, matrixB(0, 0));
-		WriteToEditBox(_hwnd, IDC_EDIT_B12, matrixB(0, 1));
-		WriteToEditBox(_hwnd, IDC_EDIT_B13, matrixB(0, 2));
-		WriteToEditBox(_hwnd, IDC_EDIT_B14, matrixB(0, 3));
-		WriteToEditBox(_hwnd, IDC_EDIT_B21, matrixB(1, 0));
-		WriteToEditBox(_hwnd, IDC_EDIT_B22, matrixB(1, 1));
-		WriteToEditBox(_hwnd, IDC_EDIT_B23, matrixB(1, 2));
-		WriteToEditBox(_hwnd, IDC_EDIT_B24, matrixB(1, 3));
-		WriteToEditBox(_hwnd, IDC_EDIT_B31, matrixB(2, 0));
-		WriteToEditBox(_hwnd, IDC_EDIT_B32, matrixB(2, 1));
-		WriteToEditBox(_hwnd, IDC_EDIT_B33, matrixB(2, 2));
-		WriteToEditBox(_hwnd, IDC_EDIT_B34, matrixB(2, 3));
-		WriteToEditBox(_hwnd, IDC_EDIT_B41, matrixB(3, 0));
-		WriteToEditBox(_hwnd, IDC_EDIT_B42, matrixB(3, 1));
-		WriteToEditBox(_hwnd, IDC_EDIT_B43, matrixB(3, 2));
-		WriteToEditBox(_hwnd, IDC_EDIT_B44, matrixB(3, 3));
+		WriteBMatrixValues(_hwnd, _wparam);
 		break;
 	}
 	default:
