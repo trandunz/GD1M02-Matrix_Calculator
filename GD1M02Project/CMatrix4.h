@@ -7,15 +7,9 @@
 class CMatrix4
 {
 public:
-    inline CMatrix4()
+    CMatrix4()
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                m_Data[i][j] = i * j;
-            }
-        }
+        SetZero();
     }
 
     inline void Print()
@@ -54,7 +48,6 @@ public:
         SetZero();
 
         int i = 0;
-        int j = 0;
 
         for (i = 0; i < 4; i++)
         {
@@ -89,26 +82,26 @@ public:
     inline float Determinant()
     {
         float c = 1;
-        float r = 1;
+        float det = 1;
 
         for (int i = 0; i < 4; i++) 
         {
-            for (int k = i + 1; k < 4; k++) 
+            for (int j = i + 1; j < 4; j++) 
             {
-                c = m_Data[k][i] / m_Data[i][i];
-                for (int j = i; j < 4; j++)
-                {
-                    m_Data[k][j] = m_Data[k][j] - c * m_Data[i][j];
-                }
+                c = m_Data[j][i] / m_Data[i][i];
 
+                for (int k = i; k < 4; k++)
+                {
+                    m_Data[j][k] = m_Data[j][k] - c * m_Data[i][k];
+                }
             }
         }
         for (int i = 0; i < 4; i++)
         {
-            r *= m_Data[i][i];
+            det *= m_Data[i][i];
         }
 
-        return r;
+        return det;
     }
 
     inline CMatrix4 LUDCInverse(CMatrix4 _matrix)

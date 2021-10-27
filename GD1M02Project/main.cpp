@@ -34,7 +34,7 @@ void Update(MSG& msg);
 void TranslateAndDispatchMessage(MSG& msg);
 
 bool ProcessInputFields(HWND& _hwnd, WPARAM& _wparam);
-void ProcessMatAInput(HWND& _hwnd, WPARAM& _wparam);
+void ProcessMatrixAInput(HWND& _hwnd, WPARAM& _wparam);
 void ProcessMatrixBInput(HWND& _hwnd, WPARAM& _wparam);
 void ProcessAdditionInput(HWND& _hwnd, WPARAM& _wparam);
 void ProcessMinusInput(HWND& _hwnd, WPARAM& _wparam);
@@ -186,7 +186,6 @@ BOOL CALLBACK MatrixDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 	}
 	case WM_CLOSE:
 	{
-		MessageBox(_hwnd, ToWideString(_value).c_str(), L"Default Value", MB_OK);
 		ShowWindow(_hwnd, SW_HIDE);
 
 		return TRUE;
@@ -437,13 +436,13 @@ void TranslateAndDispatchMessage(MSG& msg)
 
 bool ProcessInputFields(HWND& _hwnd, WPARAM& _wparam)
 {
-	ProcessMatAInput(_hwnd, _wparam);
+	ProcessMatrixAInput(_hwnd, _wparam);
 	ProcessMatrixBInput(_hwnd, _wparam);
 
 	return TRUE;
 }
 
-void ProcessMatAInput(HWND& _hwnd, WPARAM& _wparam)
+void ProcessMatrixAInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	switch ((LOWORD(_wparam)))
 	{
