@@ -34,21 +34,21 @@ void Update(MSG& msg);
 void TranslateAndDispatchMessage(MSG& msg);
 
 bool ProcessInputFields(HWND& _hwnd, WPARAM& _wparam);
-void ProcessMatrixAInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessMatrixBInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessAdditionInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessMinusInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
-void ProcessBToIdentity(HWND& _hwnd, WPARAM& _wparam);
-void ProcessBTranspose(HWND& _hwnd, WPARAM& _wparam);
-void ProcessATranspose(HWND& _hwnd, WPARAM& _wparam);
-void ProcessAToIdentity(HWND& _hwnd, WPARAM& _wparam);
-void ProcessBDeterminant(HWND& _hwnd, WPARAM& _wparam);
-void ProcessADeterminant(HWND& _hwnd, WPARAM& _wparam);
-void ProcessBInverse(HWND& _hwnd, WPARAM& _wparam);
-void ProcessAInverse(HWND& _hwnd, WPARAM& _wparam);
-void ProcessScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessMatAInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessMatrixBInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessAdditionInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessMinusInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessBToIdentity(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessBTranspose(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessATranspose(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessAToIdentity(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessBDeterminant(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessADeterminant(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessBInverse(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessAInverse(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
 
 void WriteResultantMatrixValues(HWND& _hwnd, WPARAM& _wparam);
 void WriteBMatrixValues(HWND& _hwnd, WPARAM& _wparam);
@@ -58,7 +58,7 @@ HMENU g_hMenu;
 HWND g_hDlgMatrix, g_hDlgTransformation, g_hDlgGaussian, g_hDlgQuaternion, g_hDlgSLERP;
 
 // The Three Matricies
-CMatrix4 matrixA, matrixB, resultantMat;
+CMatrix4 mat4A, mat4B, mat4Result;
 
 LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
@@ -167,50 +167,48 @@ BOOL CALLBACK MatrixDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 	{
 		if (ProcessInputFields(_hwnd, _wparam))
 		{
-			ProcessAdditionInput(_hwnd, _wparam);
-			ProcessMinusInput(_hwnd, _wparam);
-			ProcessMultiplyInput(_hwnd, _wparam);
-			ProcessInverseMultiplyInput(_hwnd, _wparam);
-			ProcessBToIdentity(_hwnd, _wparam);
-			ProcessBTranspose(_hwnd, _wparam);
-			ProcessATranspose(_hwnd, _wparam);
-			ProcessAToIdentity(_hwnd, _wparam);
-			ProcessBDeterminant(_hwnd, _wparam);
-			ProcessADeterminant(_hwnd, _wparam);
-			ProcessBInverse(_hwnd, _wparam);
-			ProcessAInverse(_hwnd, _wparam);
-			ProcessScalarMultiplication(_hwnd, _wparam);
+			if (ProcessAdditionInput(_hwnd, _wparam)) {}
+			else if (ProcessMinusInput(_hwnd, _wparam)) {}
+			else if (ProcessMultiplyInput(_hwnd, _wparam)) {}
+			else if (ProcessInverseMultiplyInput(_hwnd, _wparam)) {}
+			else if (ProcessBToIdentity(_hwnd, _wparam)) {}
+			else if (ProcessBTranspose(_hwnd, _wparam)) {}
+			else if (ProcessATranspose(_hwnd, _wparam)) {}
+			else if (ProcessAToIdentity(_hwnd, _wparam)) {}
+			else if (ProcessBDeterminant(_hwnd, _wparam)) {}
+			else if (ProcessADeterminant(_hwnd, _wparam)) {}
+			else if (ProcessBInverse(_hwnd, _wparam)) {}
+			else if (ProcessAInverse(_hwnd, _wparam)) {}
+			else if (ProcessScalarMultiplication(_hwnd, _wparam)) {}
 
 			return TRUE;
 		}
 	}
 	case WM_CLOSE:
 	{
+		MessageBox(_hwnd, ToWideString(_value).c_str(), L"Default Value", MB_OK);
 		ShowWindow(_hwnd, SW_HIDE);
 
 		return TRUE;
 		break;
 	}
-	default:
-		break;
 	}
 
 	return FALSE;
 }
 BOOL CALLBACK TransformationDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
-
 	switch (_msg)
 	{
 	
 	case WM_COMMAND:
 	{
-		switch (LOWORD(_wparam))
-		{
-
-		default:
-			break;
-		}
+		//switch (LOWORD(_wparam))
+		//{
+		//
+		//default:
+		//	break;
+		//}
 		
 	return TRUE;
 	break;
@@ -234,12 +232,12 @@ BOOL CALLBACK GaussianDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpa
 	{
 	case WM_COMMAND:
 	{
-		switch (LOWORD(_wparam))
-		{
-
-		default:
-			break;
-		}
+		//switch (LOWORD(_wparam))
+		//{
+		//
+		//default:
+		//	break;
+		//}
 
 		return TRUE;
 		break;
@@ -263,12 +261,12 @@ BOOL CALLBACK QuaternionDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _l
 	{
 	case WM_COMMAND:
 	{
-		switch (LOWORD(_wparam))
-		{
-
-		default:
-			break;
-		}
+		//switch (LOWORD(_wparam))
+		//{
+		//
+		//default:
+		//	break;
+		//}
 
 		return TRUE;
 		break;
@@ -292,12 +290,12 @@ BOOL CALLBACK SLERPDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam
 	{
 	case WM_COMMAND:
 	{
-		switch (LOWORD(_wparam))
-		{
-
-		default:
-			break;
-		}
+		//switch (LOWORD(_wparam))
+		//{
+		//
+		//default:
+		//	break;
+		//}
 
 		return TRUE;
 		break;
@@ -436,462 +434,439 @@ void TranslateAndDispatchMessage(MSG& msg)
 
 bool ProcessInputFields(HWND& _hwnd, WPARAM& _wparam)
 {
-	ProcessMatrixAInput(_hwnd, _wparam);
-	ProcessMatrixBInput(_hwnd, _wparam);
+	if (ProcessMatAInput(_hwnd, _wparam)) {}
+	else if (ProcessMatrixBInput(_hwnd, _wparam)) {}
 
 	return TRUE;
 }
 
-void ProcessMatrixAInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessMatAInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	switch ((LOWORD(_wparam)))
 	{
 	case IDC_EDIT_A11:
 	{
-		matrixA(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A11);
-		break;
+		mat4A(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A11);
+		return TRUE;
 	}
 	case IDC_EDIT_A12:
 	{
-		matrixA(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A12);
-		break;
+		mat4A(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A12);
+		return TRUE;
 	}
 	case IDC_EDIT_A13:
 	{
-		matrixA(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A13);
-		break;
+		mat4A(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A13);
+		return TRUE;
 	}
 	case IDC_EDIT_A14:
 	{
-		matrixA(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A14);
-		break;
+		mat4A(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A14);
+		return TRUE;
 	}
 	case IDC_EDIT_A21:
 	{
-		matrixA(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A21);
-		break;
+		mat4A(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A21);
+		return TRUE;
 	}
 	case IDC_EDIT_A22:
 	{
-		matrixA(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A22);
-		break;
+		mat4A(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A22);
+		return TRUE;
 	}
 	case IDC_EDIT_A23:
 	{
-		matrixA(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A23);
-		break;
+		mat4A(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A23);
+		return TRUE;
 	}
 	case IDC_EDIT_A24:
 	{
-		matrixA(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A24);
-		break;
+		mat4A(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A24);
+		return TRUE;
 	}
 	case IDC_EDIT_A31:
 	{
-		matrixA(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A31);
-		break;
+		mat4A(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A31);
+		return TRUE;
 	}
 	case IDC_EDIT_A32:
 	{
-		matrixA(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A32);
-		break;
+		mat4A(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A32);
+		return TRUE;
 	}
 	case IDC_EDIT_A33:
 	{
-		matrixA(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A33);
-		break;
+		mat4A(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A33);
+		return TRUE;
 	}
 	case IDC_EDIT_A34:
 	{
-		matrixA(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A34);
-		break;
+		mat4A(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A34);
+		return TRUE;
 	}
 	case IDC_EDIT_A41:
 	{
-		matrixA(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A41);
-		break;
+		mat4A(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_A41);
+		return TRUE;
 	}
 	case IDC_EDIT_A42:
 	{
-		matrixA(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A42);
-		break;
+		mat4A(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_A42);
+		return TRUE;
 	}
 	case IDC_EDIT_A43:
 	{
-		matrixA(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A43);
-		break;
+		mat4A(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_A43);
+		return TRUE;
 	}
 	case IDC_EDIT_A44:
 	{
-		matrixA(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A44);
-		break;
+		mat4A(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_A44);
+		return TRUE;
 	}
 	default:
 		break;
 	}
+
+	return FALSE;
 }
 
-void ProcessMatrixBInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessMatrixBInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	switch ((LOWORD(_wparam)))
 	{
 	case IDC_EDIT_B11:
 	{
-		matrixB(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B11);
-		break;
+		mat4B(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B11);
+		return TRUE;
 	}
 	case IDC_EDIT_B12:
 	{
-		matrixB(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B12);
-		break;
+		mat4B(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B12);
+		return TRUE;
 	}
 	case IDC_EDIT_B13:
 	{
-		matrixB(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B13);
-		break;
+		mat4B(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B13);
+		return TRUE;
 	}
 	case IDC_EDIT_B14:
 	{
-		matrixB(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B14);
-		break;
+		mat4B(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B14);
+		return TRUE;
 	}
 	case IDC_EDIT_B21:
 	{
-		matrixB(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B21);
-		break;
+		mat4B(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B21);
+		return TRUE;
 	}
 	case IDC_EDIT_B22:
 	{
-		matrixB(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B22);
-		break;
+		mat4B(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B22);
+		return TRUE;
 	}
 	case IDC_EDIT_B23:
 	{
-		matrixB(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B23);
-		break;
+		mat4B(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B23);
+		return TRUE;
 	}
 	case IDC_EDIT_B24:
 	{
-		matrixB(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B24);
-		break;
+		mat4B(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B24);
+		return TRUE;
 	}
 	case IDC_EDIT_B31:
 	{
-		matrixB(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B31);
-		break;
+		mat4B(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B31);
+		return TRUE;
 	}
 	case IDC_EDIT_B32:
 	{
-		matrixB(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B32);
-		break;
+		mat4B(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B32);
+		return TRUE;
 	}
 	case IDC_EDIT_B33:
 	{
-		matrixB(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B33);
-		break;
+		mat4B(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B33);
+		return TRUE;
 	}
 	case IDC_EDIT_B34:
 	{
-		matrixB(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B34);
-		break;
+		mat4B(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B34);
+		return TRUE;
 	}
 	case IDC_EDIT_B41:
 	{
-		matrixB(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B41);
-		break;
+		mat4B(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT_B41);
+		return TRUE;
 	}
 	case IDC_EDIT_B42:
 	{
-		matrixB(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B42);
-		break;
+		mat4B(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT_B42);
+		return TRUE;
 	}
 	case IDC_EDIT_B43:
 	{
-		matrixB(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B43);
-		break;
+		mat4B(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT_B43);
+		return TRUE;
 	}
 	case IDC_EDIT_B44:
 	{
-		matrixB(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B44);
-		break;
+		mat4B(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT_B44);
+		return TRUE;
 	}
 	default:
 		break;
 	}
+
+	return FALSE;
 }
 
-void ProcessAdditionInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessAdditionInput(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK)
 	{
-	case IDOK:
-	{
-		resultantMat.SetZero();
-		resultantMat = matrixA;
-		resultantMat += matrixB;
+		mat4Result.SetToZero();
+		mat4Result = mat4A + mat4B;
 
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessMinusInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessMinusInput(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDCANCEL)
 	{
-	case IDCANCEL:
-	{
-		resultantMat.SetZero();
-		resultantMat = matrixA;
-		resultantMat -= matrixB;
+		mat4Result.SetToZero();
+		mat4Result = mat4A - mat4B;
 
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK2)
 	{
-	case IDOK2:
-	{
-		resultantMat.SetZero();
-		resultantMat = matrixA;
-		resultantMat *= matrixB;
+		mat4Result.SetToZero();
+		mat4Result = mat4A * mat4B;
 
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK5)
 	{
-	case IDOK5:
-	{
-		resultantMat.SetZero();
-		resultantMat = matrixB;
-		resultantMat *= matrixA;
+		mat4Result.SetToZero();
+		mat4Result = mat4B * mat4A;
 
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessBToIdentity(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessBToIdentity(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK8)
 	{
-	case IDOK8:
-	{
-		matrixB.SetAsLinear();
+		mat4B.SetToIdentity();
 
 		WriteBMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessBTranspose(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessBTranspose(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK11)
 	{
-	case IDOK11:
-	{
-		matrixB.Transpose();
+		mat4B.Transpose();
 
 		WriteBMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessATranspose(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessATranspose(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK9)
 	{
-	case IDOK9:
-	{
-		matrixA.Transpose();
+		mat4A.Transpose();
 
 		WriteAMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessAToIdentity(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessAToIdentity(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK4)
 	{
-	case IDOK4:
-	{
-		matrixA.SetAsLinear();
+		mat4A.SetToIdentity();
 
 		WriteAMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessBDeterminant(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessBDeterminant(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK7)
 	{
-	case IDOK7:
-	{
-		WriteToEditBox(_hwnd, IDC_EDIT_DetB, matrixB.Determinant());
-		break;
+		WriteToEditBox(_hwnd, IDC_EDIT_DetB, mat4B.Determinant());
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessADeterminant(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessADeterminant(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDOK3)
 	{
-	case IDOK3:
-	{
-		WriteToEditBox(_hwnd, IDC_EDIT_DetA, matrixA.Determinant());
-		break;
+		WriteToEditBox(_hwnd, IDC_EDIT_DetA, mat4A.Determinant());
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessBInverse(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessBInverse(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDCANCEL3)
 	{
-	case IDCANCEL3:
-	{
-		resultantMat = matrixB.LUDCInverse(matrixB);
+		mat4Result = mat4B.LUDCInverse();
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessAInverse(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessAInverse(HWND& _hwnd, WPARAM& _wparam)
 {
-	switch (_wparam)
+	if (_wparam == IDCANCEL2)
 	{
-	case IDCANCEL2:
-	{
-		resultantMat = matrixA.LUDCInverse(matrixA);
+		mat4Result = mat4A.LUDCInverse();
 		WriteResultantMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
-	default:
-		break;
-	}
+
+	return FALSE;
 }
 
-void ProcessScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 {
 	switch (LOWORD(_wparam))
 	{
 	case IDOK6:
 	{
-		matrixA = matrixA * ReadFromEditBox(_hwnd, IDC_EDIT_AScaled);
+		mat4A = mat4A * ReadFromEditBox(_hwnd, IDC_EDIT_AScaled);
 		WriteAMatrixValues(_hwnd, _wparam);
-		break;
+
+		return TRUE;
 	}
 	case IDOK10:
 	{
-
-		matrixB = matrixB * ReadFromEditBox(_hwnd, IDC_EDIT_BScaled);
+		mat4B = mat4B * ReadFromEditBox(_hwnd, IDC_EDIT_BScaled);
 		WriteBMatrixValues(_hwnd, _wparam);
-		break;
+		
+		return TRUE;
 	}
 	default:
-		break;
+		return FALSE;
 	}
 }
 
 void WriteResultantMatrixValues(HWND& _hwnd, WPARAM& _wparam)
 {
-	WriteToEditBox(_hwnd, IDC_EDIT_R11, resultantMat(0, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_R12, resultantMat(0, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_R13, resultantMat(0, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_R14, resultantMat(0, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_R21, resultantMat(1, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_R22, resultantMat(1, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_R23, resultantMat(1, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_R24, resultantMat(1, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_R31, resultantMat(2, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_R32, resultantMat(2, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_R33, resultantMat(2, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_R34, resultantMat(2, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_R41, resultantMat(3, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_R42, resultantMat(3, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_R43, resultantMat(3, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_R44, resultantMat(3, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_R11, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_R12, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_R13, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_R14, mat4Result(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_R21, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_R22, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_R23, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_R24, mat4Result(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_R31, mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_R32, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_R33, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_R34, mat4Result(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_R41, mat4Result(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_R42, mat4Result(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_R43, mat4Result(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_R44, mat4Result(3, 3));
 }
 
 void WriteBMatrixValues(HWND& _hwnd, WPARAM& _wparam)
 {
-	WriteToEditBox(_hwnd, IDC_EDIT_B11, matrixB(0, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_B12, matrixB(0, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_B13, matrixB(0, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_B14, matrixB(0, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_B21, matrixB(1, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_B22, matrixB(1, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_B23, matrixB(1, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_B24, matrixB(1, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_B31, matrixB(2, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_B32, matrixB(2, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_B33, matrixB(2, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_B34, matrixB(2, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_B41, matrixB(3, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_B42, matrixB(3, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_B43, matrixB(3, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_B44, matrixB(3, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_B11, mat4B(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_B12, mat4B(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_B13, mat4B(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_B14, mat4B(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_B21, mat4B(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_B22, mat4B(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_B23, mat4B(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_B24, mat4B(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_B31, mat4B(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_B32, mat4B(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_B33, mat4B(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_B34, mat4B(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_B41, mat4B(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_B42, mat4B(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_B43, mat4B(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_B44, mat4B(3, 3));
 }
 
 void WriteAMatrixValues(HWND& _hwnd, WPARAM& _wparam)
 {
-	WriteToEditBox(_hwnd, IDC_EDIT_A11, matrixA(0, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_A12, matrixA(0, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_A13, matrixA(0, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_A14, matrixA(0, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_A21, matrixA(1, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_A22, matrixA(1, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_A23, matrixA(1, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_A24, matrixA(1, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_A31, matrixA(2, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_A32, matrixA(2, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_A33, matrixA(2, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_A34, matrixA(2, 3));
-	WriteToEditBox(_hwnd, IDC_EDIT_A41, matrixA(3, 0));
-	WriteToEditBox(_hwnd, IDC_EDIT_A42, matrixA(3, 1));
-	WriteToEditBox(_hwnd, IDC_EDIT_A43, matrixA(3, 2));
-	WriteToEditBox(_hwnd, IDC_EDIT_A44, matrixA(3, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_A11, mat4A(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_A12, mat4A(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_A13, mat4A(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_A14, mat4A(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_A21, mat4A(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_A22, mat4A(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_A23, mat4A(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_A24, mat4A(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_A31, mat4A(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_A32, mat4A(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_A33, mat4A(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_A34, mat4A(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT_A41, mat4A(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT_A42, mat4A(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT_A43, mat4A(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT_A44, mat4A(3, 3));
 }

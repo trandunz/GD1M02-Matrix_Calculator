@@ -4,55 +4,46 @@
 
 #include <iostream>
 
-
 class CMatrix4
 {
 public:
-    CMatrix4()
+    inline CMatrix4()
     {
-        SetZero();
+        SetToZero();
     }
 
     inline void Print()
     {
-        int i = 0;
-        int j = 0;
-
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (j = 0; j < 4; j++)
+            for (int j = 0; j < 4; j++)
             {
-                std::cout << m_Data[i][j] << ",";
+                std::cout << m_fData[i][j] << ',';
             }
             std::cout << std::endl;
         }
     }
 
-    inline CMatrix4& SetZero()
+    inline CMatrix4& SetToZero()
     {
-        int i = 0;
-        int j = 0;
-
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            for (j = 0; j < 4; j++)
+            for (int j = 0; j < 4; j++)
             {
-                m_Data[i][j] = 0;
+                m_fData[i][j] = 0.0f;
             }
         }
 
         return *this;
     }
 
-    inline CMatrix4& SetAsLinear()
+    inline CMatrix4& SetToIdentity()
     {
-        SetZero();
+        SetToZero();
 
-        int i = 0;
-
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
-            m_Data[i][i] = 1;
+            m_fData[i][i] = 1;
         }
 
         return *this;
@@ -60,21 +51,23 @@ public:
 
     inline CMatrix4& Transpose()
     {
-        float copy[4][4]{  };
+        //Create a 4x4 array to store the data of the transposed matrix
+        float fCopy[4][4];
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                copy[i][j] = m_Data[j][i];
+                fCopy[i][j] = m_fData[j][i];
             }
         }
 
+        //Set the data in the 4x4 array to the matrix
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                m_Data[i][j] = copy[i][j];
-            }   
+                m_fData[i][j] = fCopy[i][j];
+            }
         }
 
         return *this;
@@ -82,52 +75,63 @@ public:
 
     inline float Determinant()
     {
-        float c = 1;
-        float det = 1;
-
-        for (int i = 0; i < 4; i++) 
+        //Create a 4x4 array to store the data of the transposed matrix
+        float fCopy[4][4];
+        for (int i = 0; i < 4; i++)
         {
-            for (int j = i + 1; j < 4; j++) 
+            for (int j = 0; j < 4; j++)
             {
-                c = m_Data[j][i] / m_Data[i][i];
+                fCopy[i][j] = m_fData[j][i];
+            }
+        }
 
-                for (int k = i; k < 4; k++)
+        //Calculate the determinant
+        float r = 1;
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int k = i + 1; k < 4; k++)
+            {
+                float c = fCopy[k][i] / fCopy[i][i];
+                for (int j = i; j < 4; j++)
                 {
-                    m_Data[j][k] = m_Data[j][k] - c * m_Data[i][k];
+                    fCopy[k][j] = fCopy[k][j] - c * fCopy[i][j];
                 }
             }
         }
+
         for (int i = 0; i < 4; i++)
         {
-            det *= m_Data[i][i];
+            r *= fCopy[i][i];
         }
 
-        return det;
+        return r;
     }
 
-    inline CMatrix4 LUDCInverse(CMatrix4 _matrix)
+    inline CMatrix4 LUDCInverse()
     {
-        float sum = 0;
+        CMatrix4 mat4Result = *this;
+        float fSum = 0;
         int i = 0;
         int j = 0;
         int k = 0;
 
         for (i = 1; i < 4; i++)
         {
-            _matrix(0,i) /= _matrix(0,0);
+            mat4Result.m_fData[0][i] /= mat4Result.m_fData[0][0];
         }
 
         for (i = 1; i < 4; i++)
         {
             for (j = i; j < 4; j++)
             {
-                sum = 0;
+                fSum = 0;
                 for (k = 0; k < i; k++)
                 {
-                    sum += _matrix(j,k) * _matrix(k, i);
+                    fSum += mat4Result.m_fData[j][k] * mat4Result.m_fData[k][i];
                 }
 
-                _matrix(j, i) -= sum;
+                mat4Result.m_fData[j][i] -= fSum;
             }
             if (i == 3)
             {
@@ -135,11 +139,11 @@ public:
             }
             for (j = i + 1; j < 4; j++)
             {
-                sum = 0;
+                fSum = 0;
                 for (int k = 0; k < i; k++)
                 {
-                    sum += _matrix(i, k) * _matrix(k, j);
-                    _matrix(i, j) = (_matrix(i, j) - sum) / _matrix(i, i);
+                    fSum += mat4Result.m_fData[i][k] * mat4Result.m_fData[k][j];
+                    mat4Result.m_fData[i][j] = (mat4Result.m_fData[i][j] - fSum) / mat4Result.m_fData[i][i];
                 }
             }
         }
@@ -155,11 +159,11 @@ public:
                     x = 0;
                     for (int k = i; k < j; k++)
                     {
-                        x -= _matrix(j, k) * _matrix(k, i);
+                        x -= mat4Result.m_fData[j][k] * mat4Result.m_fData[k][i];
                     }
                 }
 
-                _matrix(j, i) = x / _matrix(j, j);
+                mat4Result.m_fData[j][i] = x / mat4Result.m_fData[j][j];
             }
         }
 
@@ -173,19 +177,19 @@ public:
                 }
                 else
                 {
-                    sum = 0;
+                    fSum = 0;
                     for (int k = i; k < j; k++)
                     {
                         if (i == k)
                         {
-                            sum += _matrix(k, j);
+                            fSum += mat4Result.m_fData[k][j];
                         }
                         else
                         {
-                            sum += (_matrix(k, j) * _matrix(i, k));
+                            fSum += mat4Result.m_fData[k][j] * mat4Result.m_fData[i][k];
                         }
 
-                        _matrix(i, j) = -sum;
+                        mat4Result.m_fData[i][j] = -fSum;
                     }
                 }
             }
@@ -195,24 +199,24 @@ public:
         {
             for (int j = 0; j < 4; j++)
             {
-                sum = 0;
+                fSum = 0;
                 for (int k = ((i > j) ? i : j); k < 4; k++)
                 {
                     if (j == k)
                     {
-                        sum += _matrix(k, i);
+                        fSum += mat4Result.m_fData[k][i];
                     }
                     else
                     {
-                        sum += (_matrix(j, k) * _matrix(k, i));
+                        fSum += mat4Result.m_fData[j][k] * mat4Result.m_fData[k][i];
                     }
 
-                    _matrix(j, i) = sum;
-                } 
+                    mat4Result.m_fData[j][i] = fSum;
+                }
             }
         }
 
-        return _matrix;
+        return mat4Result;
     }
 
     inline CMatrix4& operator = (CMatrix4 _rhs)
@@ -221,85 +225,108 @@ public:
         {
             for (int j = 0; j < 4; j++)
             {
-                m_Data[i][j] = _rhs(i,j);
+                m_fData[i][j] = _rhs.m_fData[i][j];
             }
         }
+
         return *this;
     }
-    
-    inline float& operator () (int _row, int _column)
+
+    inline float& operator () (int _i, int _jumn)
     {
-        return m_Data[_row][_column];
+        return m_fData[_i][_jumn];
+    }
+
+    inline CMatrix4 operator + (CMatrix4& _rhs)
+    {
+        CMatrix4 mat4Result = *this;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                mat4Result.m_fData[i][j] = m_fData[i][j] + _rhs.m_fData[i][j];
+            }
+        }
+
+        return mat4Result;
     }
 
     inline CMatrix4& operator += (CMatrix4& _rhs)
     {
+        *this = *this + _rhs;
+
+        return *this;
+    }
+
+    inline CMatrix4 operator - (CMatrix4& _rhs)
+    {
+        CMatrix4 mat4Result = *this;
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                m_Data[i][j] += _rhs.m_Data[i][j];
+                mat4Result.m_fData[i][j] = m_fData[i][j] - _rhs.m_fData[i][j];
             }
         }
 
-        return *this;
+        return mat4Result;
     }
 
     inline CMatrix4& operator -= (CMatrix4& _rhs)
     {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                m_Data[i][j] -= _rhs.m_Data[i][j];
-            }
-        }
+        *this = *this - _rhs;
 
         return *this;
     }
 
-    inline CMatrix4& operator *= (CMatrix4& _rhs)
+    inline CMatrix4 operator * (CMatrix4& _rhs)
     {
-        float result[4][4];
+        CMatrix4 mat4Result;
 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                result[i][j] = 0;
-
                 for (int k = 0; k < 4; k++)
                 {
-                    result[i][j] += m_Data[i][k] * _rhs.m_Data[k][j];
+                    mat4Result.m_fData[i][j] += m_fData[i][k] * _rhs.m_fData[k][j];
                 }
             }
         }
 
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                m_Data[i][j] = result[i][j];
-            }
-        }
+        return mat4Result;
+    }
+
+    inline CMatrix4& operator *= (CMatrix4& _rhs)
+    {
+        *this = *this * _rhs;
 
         return *this;
     }
 
-    inline CMatrix4& operator * (float _scalar)
+    inline CMatrix4 operator * (float _fScalar)
     {
+        CMatrix4 mat4Result = *this;
+
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                m_Data[i][j] *= _scalar;
+                mat4Result.m_fData[i][j] *= _fScalar;
             }
         }
+
+        return mat4Result;
+    }
+
+    inline CMatrix4& operator *= (float _fScalar)
+    {
+        *this = *this * _fScalar;
 
         return *this;
     }
 
 private:
-    float m_Data[4][4];
+    float m_fData[4][4];
 };
 #endif
