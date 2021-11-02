@@ -86,7 +86,7 @@ public:
         }
 
         //Calculate the determinant
-        float r = 1;
+        float fResult = 1;
 
         for (int i = 0; i < 4; i++)
         {
@@ -102,10 +102,10 @@ public:
 
         for (int i = 0; i < 4; i++)
         {
-            r *= fCopy[i][i];
+            fResult *= fCopy[i][i];
         }
 
-        return r;
+        return fResult;
     }
 
     inline CMatrix4 LUDCInverse()
