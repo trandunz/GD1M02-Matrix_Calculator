@@ -148,7 +148,6 @@
     <ResourceCompile Include="GD1M02Project.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CQuaternion.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

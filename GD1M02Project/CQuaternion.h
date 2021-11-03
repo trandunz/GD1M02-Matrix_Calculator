@@ -4,40 +4,140 @@
 class CQuaternion
 {
 public:
-	struct Vector4
+	inline CQuaternion()
 	{
-		float x = 0;
-		float y = 0;
-		float z = 0;
-		float w = 0;
-	};
+		SetToZero();
+	}
 
-	CQuaternion();
+	inline void SetToZero()
+	{
+		m_fData[0] = 0;
+		m_fData[1] = 0;
+		m_fData[2] = 0;
+		m_fData[3] = 0;
+	}
+
+	inline void SetToIdentity()
+	{
+		m_fData[0] = 1;
+		m_fData[1] = 0;
+		m_fData[2] = 0;
+		m_fData[3] = 0;
+	}
+
+	inline void SetQuaternion(float _fW, float _fX, float _fY, float _fZ)
+	{
+		m_fData[0] = _fW;
+		m_fData[1] = _fX;
+		m_fData[2] = _fY;
+		m_fData[3] = _fZ;
+	}
+
+	inline CQuaternion CrossProduct(CQuaternion& _rhs)
+	{
+		CQuaternion quatResult;
+		float fTheta = 0;
+		//Vector4 normal;
+
+		// Magnitude() * _rhs.Magnitude() * sin(theta) * normal
+
+		return quatResult;
+	}
+
+	inline CQuaternion GetInverse()
+	{
+		CQuaternion quatResult;
+		float fMagnitude = GetMagnitude();
+
+		if (fMagnitude != 0)
+		{
+			quatResult = GetConjugate();
+			quatResult *= 1 / (fMagnitude * fMagnitude);
+		}
+
+		return quatResult;
+	}
+
+	inline CQuaternion UnitCrossProduct(CQuaternion& _rhs)
+	{
+		CQuaternion quatResult;
+
+		quatResult.SetQuaternion(
+			m_fData[2] * _rhs.m_fData[3] - m_fData[3] * _rhs.m_fData[2],
+			m_fData[3] * _rhs.m_fData[1] - m_fData[1] * _rhs.m_fData[3],
+			m_fData[1] * _rhs.m_fData[2] - m_fData[2] * _rhs.m_fData[1],
+			m_fData[0] * _rhs.m_fData[0]);
+
+		return quatResult;
+	}
+
+	inline float DotProduct(CQuaternion& _rhs)
+	{
+		return (m_fData[0] * _rhs.GetW()) + (m_fData[1] * _rhs.GetX()) + (m_fData[2] * _rhs.GetY()) + (m_fData[3] * _rhs.GetZ());
+	}
+
+	inline CQuaternion GetUnit()
+	{
+		CQuaternion quatResult;
+
+		float fMagnitude = GetMagnitude();
+		quatResult.SetQuaternion(
+			m_fData[0] / fMagnitude,
+			m_fData[1] / fMagnitude,
+			m_fData[2] / fMagnitude,
+			m_fData[3] / fMagnitude);
+
+		return quatResult;
+	}
+
+	inline float GetMagnitude()
+	{
+		return sqrt
+		(
+			(m_fData[1] * m_fData[1]) +
+			(m_fData[2] * m_fData[2]) +
+			(m_fData[3] * m_fData[3]) +
+			(m_fData[0] * m_fData[0]));
+	}
+
+	inline CQuaternion GetConjugate()
+	{
+		CQuaternion quatConjugate;
+		quatConjugate.SetQuaternion(m_fData[0], -m_fData[1], -m_fData[2], -m_fData[3]);
+
+		return quatConjugate;
+	}
+
+	inline float GetW() { return m_fData[0]; };
+	inline float GetX() { return m_fData[1]; };
+	inline float GetY() { return m_fData[2]; };
+	inline float GetZ() { return m_fData[3]; };
+
+	inline void SetW(float _value) { m_fData[0] = _value; };
+	inline void SetX(float _value) { m_fData[1] = _value; };
+	inline void SetY(float _value) { m_fData[2] = _value; };
+	inline void SetZ(float _value) { m_fData[3] = _value; };
 
 	inline CQuaternion& operator = (CQuaternion _rhs)
 	{
-		m_Quaternion.x = _rhs.GetReal();
-		m_Quaternion.y = _rhs.GetI();
-		m_Quaternion.z = _rhs.GetJ();
-		m_Quaternion.w = _rhs.GetK();
+		m_fData[0] = _rhs.GetW();
+		m_fData[1] = _rhs.GetX();
+		m_fData[2] = _rhs.GetY();
+		m_fData[3] = _rhs.GetZ();
 
 		return *this;
 	}
 
 	inline CQuaternion operator * (CQuaternion& _rhs)
 	{
-		CQuaternion product;
-		product.SetQuaternion(
-			(m_Quaternion.w * _rhs.GetReal()) - (m_Quaternion.x * _rhs.GetI()) - (m_Quaternion.y * _rhs.GetJ()) - (m_Quaternion.z * _rhs.GetK()),
-			(m_Quaternion.w * _rhs.GetI()) + (m_Quaternion.x * _rhs.GetReal()) + (m_Quaternion.y * _rhs.GetK()) - (m_Quaternion.z * _rhs.GetJ()),
-			(m_Quaternion.w * _rhs.GetJ()) - (m_Quaternion.x * _rhs.GetK()) + (m_Quaternion.y * _rhs.GetReal()) + (m_Quaternion.z * _rhs.GetI()),
-			(m_Quaternion.w * _rhs.GetK()) + (m_Quaternion.x * _rhs.GetJ()) - (m_Quaternion.y * _rhs.GetI()) + (m_Quaternion.z * _rhs.GetReal()));
-		//product.SetQuaternion(
-		//	m_Quaternion.x * _rhs.GetJ() - m_Quaternion.z * _rhs.GetI() + m_Quaternion.x * _rhs.GetK() + m_Quaternion.w * _rhs.GetReal(),
-		//	m_Quaternion.z * _rhs.GetReal() - m_Quaternion.x * _rhs.GetJ() + m_Quaternion.y * _rhs.GetK() + m_Quaternion.w * _rhs.GetI(),
-		//	m_Quaternion.x * _rhs.GetI() - m_Quaternion.y * _rhs.GetReal() + m_Quaternion.z * _rhs.GetK() + m_Quaternion.w * _rhs.GetJ(),
-		//	m_Quaternion.w * _rhs.GetK() - m_Quaternion.x * _rhs.GetReal() - m_Quaternion.y * _rhs.GetI() - m_Quaternion.z * _rhs.GetJ());
-		return product;
+		CQuaternion quatResult;
+		quatResult.SetQuaternion(
+			(m_fData[0] * _rhs.GetW()) - (m_fData[1] * _rhs.GetX()) - (m_fData[2] * _rhs.GetY()) - (m_fData[3] * _rhs.GetZ()),
+			(m_fData[0] * _rhs.GetX()) + (m_fData[1] * _rhs.GetW()) + (m_fData[2] * _rhs.GetZ()) - (m_fData[3] * _rhs.GetY()),
+			(m_fData[0] * _rhs.GetY()) - (m_fData[1] * _rhs.GetZ()) + (m_fData[2] * _rhs.GetW()) + (m_fData[3] * _rhs.GetX()),
+			(m_fData[0] * _rhs.GetZ()) + (m_fData[1] * _rhs.GetY()) - (m_fData[2] * _rhs.GetX()) + (m_fData[3] * _rhs.GetW()));
+		
+		return quatResult;
 	}
 
 	inline CQuaternion& operator *= (CQuaternion& _rhs)
@@ -46,24 +146,24 @@ public:
 		return *this;
 	}
 
-	inline CQuaternion operator * (float _scalar)
+	inline CQuaternion operator * (float _fScalar)
 	{
-		CQuaternion product;
-		product.SetQuaternion(m_Quaternion.x * _scalar, m_Quaternion.y * _scalar, m_Quaternion.z * _scalar, m_Quaternion.w * _scalar);
-		return product;
+		CQuaternion quatResult;
+		quatResult.SetQuaternion(m_fData[0] * _fScalar, m_fData[1] * _fScalar, m_fData[2] * _fScalar, m_fData[3] * _fScalar);
+		return quatResult;
 	}
 
-	inline CQuaternion& operator *= (float _scalar)
+	inline CQuaternion& operator *= (float _fScalar)
 	{
-		*this = *this * _scalar;
+		*this = *this * _fScalar;
 		return *this;
 	}
 
 	inline CQuaternion operator + (CQuaternion& _rhs)
 	{
-		CQuaternion product;
-		product.SetQuaternion(m_Quaternion.x + _rhs.GetReal(), m_Quaternion.y + _rhs.GetI(), m_Quaternion.z + _rhs.GetJ(), m_Quaternion.w + _rhs.GetK());
-		return product;
+		CQuaternion quatResult;
+		quatResult.SetQuaternion(m_fData[0] + _rhs.GetW(), m_fData[1] + _rhs.GetX(), m_fData[2] + _rhs.GetY(), m_fData[3] + _rhs.GetZ());
+		return quatResult;
 	}
 
 	inline CQuaternion& operator += (CQuaternion& _rhs)
@@ -74,9 +174,9 @@ public:
 
 	inline CQuaternion operator - (CQuaternion& _rhs)
 	{
-		CQuaternion product;
-		product.SetQuaternion(m_Quaternion.x - _rhs.GetReal(), m_Quaternion.y - _rhs.GetI(), m_Quaternion.z - _rhs.GetJ(), m_Quaternion.w - _rhs.GetK());
-		return product;
+		CQuaternion quatResult;
+		quatResult.SetQuaternion(m_fData[0] - _rhs.GetW(), m_fData[1] - _rhs.GetX(), m_fData[2] - _rhs.GetY(), m_fData[3] - _rhs.GetZ());
+		return quatResult;
 	}
 
 	inline CQuaternion& operator -= (CQuaternion& _rhs)
@@ -85,52 +185,8 @@ public:
 		return *this;
 	}
 
-	void SetZero();
-
-	void SetIdentity();
-
-	void SetQuaternion(float _r, float _i, float _j, float _k);
-
-	inline CQuaternion CrossProduct(CQuaternion& _rhs)
-	{
-		CQuaternion product;
-		float theta = 0;
-		Vector4 normal;
-
-		// Magnitude() * _rhs.Magnitude() * sin(theta) * normal
-
-		return product;
-	}
-
-	inline CQuaternion UnitCrossProduct(CQuaternion& _rhs)
-	{
-		CQuaternion product;
-		product.SetQuaternion(
-			m_Quaternion.y * _rhs.m_Quaternion.z - m_Quaternion.z * _rhs.m_Quaternion.y,
-			m_Quaternion.z * _rhs.m_Quaternion.x - m_Quaternion.x * _rhs.m_Quaternion.z,
-			m_Quaternion.x * _rhs.m_Quaternion.y - m_Quaternion.y * _rhs.m_Quaternion.x,
-			m_Quaternion.w * _rhs.m_Quaternion.w);
-		return product;
-	}
-
-	inline float Magnitude() 
-	{
-		return sqrt((m_Quaternion.x * m_Quaternion.x) + (m_Quaternion.y * m_Quaternion.y) + (m_Quaternion.z * m_Quaternion.z) + (m_Quaternion.w * m_Quaternion.w));
-	}
-
-	CQuaternion Conjugate();
-
-	inline float GetReal() { return m_Quaternion.x; };
-	inline float GetI() { return m_Quaternion.y; };
-	inline float GetJ() { return m_Quaternion.z; };
-	inline float GetK() { return m_Quaternion.w; };
-
-	inline float SetReal(float _value) { m_Quaternion.x = _value; };
-	inline float SetI(float _value) { m_Quaternion.y = _value; };
-	inline float SetJ(float _value) { m_Quaternion.z = _value; };
-	inline float SetK(float _value) { m_Quaternion.w = _value; };
-
 	private:
-		Vector4 m_Quaternion;
+		//m_fData[0] = w, m_fData[1] = x, m_fData[2] = y, m_fData[3] = z
+		float m_fData[4];
 };
 
