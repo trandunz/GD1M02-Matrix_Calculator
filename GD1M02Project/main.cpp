@@ -624,11 +624,9 @@ bool ProcessMatrixAdditionInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDOK)
 	{
-		mat4Result.SetToZero();
 		mat4Result = mat4A + mat4B;
 
 		WriteResultantMatrixValues(_hwnd, _wparam);
-
 		return TRUE;
 	}
 
@@ -639,9 +637,7 @@ bool ProcessMatrixMinusInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDCANCEL)
 	{
-		mat4Result.SetToZero();
 		mat4Result = mat4A - mat4B;
-
 		WriteResultantMatrixValues(_hwnd, _wparam);
 
 		return TRUE;
@@ -654,9 +650,7 @@ bool ProcessMatrixMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDOK2)
 	{
-		mat4Result.SetToZero();
 		mat4Result = mat4A * mat4B;
-
 		WriteResultantMatrixValues(_hwnd, _wparam);
 
 		return TRUE;
@@ -669,9 +663,7 @@ bool ProcessMatrixInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDOK5)
 	{
-		mat4Result.SetToZero();
 		mat4Result = mat4B * mat4A;
-
 		WriteResultantMatrixValues(_hwnd, _wparam);
 
 		return TRUE;
