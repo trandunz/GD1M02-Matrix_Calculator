@@ -128,6 +128,27 @@ public:
 		return *this;
 	}
 
+	inline CMatrix4 InducedMatrix()
+	{
+		CMatrix4 mat4Result;
+
+		mat4Result(0, 0) = (2.0f * m_fData[0] * m_fData[0]) - 1.0f + (2 * m_fData[1] * m_fData[1]);
+		mat4Result(0, 1) = (2.0f * m_fData[1] * m_fData[2]) + (2.0f * m_fData[0] * m_fData[3]);
+		mat4Result(0, 2) = (2.0f * m_fData[1] * m_fData[3]) - (2.0f * m_fData[0] * m_fData[2]);
+
+		mat4Result(1, 0) = (2.0f * m_fData[1] * m_fData[2]) - (2.0f * m_fData[0] * m_fData[3]);
+		mat4Result(1, 1) = (2.0f * m_fData[0] * m_fData[0]) - 1.0f + (2 * m_fData[2] * m_fData[2]);
+		mat4Result(1, 2) = (2.0f * m_fData[2] * m_fData[3]) + (2.0f * m_fData[0] * m_fData[1]);
+
+		mat4Result(2, 0) = (2.0f * m_fData[1] * m_fData[3]) + (2.0f * m_fData[0] * m_fData[2]);
+		mat4Result(2, 1) = (2.0f * m_fData[2] * m_fData[3]) - (2.0f * m_fData[0] * m_fData[1]);
+		mat4Result(2, 2) = (2.0f * m_fData[0] * m_fData[0]) - 1.0f + (2 * m_fData[3] * m_fData[3]);
+
+		mat4Result(3, 3) = 1.0f;
+
+		return mat4Result;
+	}
+
 	inline CQuaternion operator * (CQuaternion& _rhs)
 	{
 		CQuaternion quatResult;

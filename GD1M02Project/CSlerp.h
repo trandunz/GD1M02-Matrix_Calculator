@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "CQuaternion.h"
+#include "CMatrix4.h"
 
 static class CSlerp
 {

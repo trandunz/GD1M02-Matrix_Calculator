@@ -15,10 +15,10 @@ public:
 
     inline CGaussianElimination()
     {
-        SetZero();
+        SetToZero();
     }
 
-    inline CGaussianElimination& SetZero()
+    inline CGaussianElimination& SetToZero()
     {
         for (int i = 0; i < 3; i++)
         {
@@ -84,7 +84,7 @@ public:
             /* find greater amplitude for pivot if any */
             for (int i = k + 1; i < 3; i++)
                 if (abs(m_Matrix[i][k]) > (float)v_max)
-                    v_max = m_Matrix[i][k], i_max = i;
+                    v_max = (int)m_Matrix[i][k], i_max = i;
 
             /* if a prinicipal diagonal element  is zero,
              * it denotes that m_Matrixrix is singular, and
