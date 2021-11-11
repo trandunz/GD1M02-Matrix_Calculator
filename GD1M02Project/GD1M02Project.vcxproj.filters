@@ -27,6 +27,9 @@
     <ClInclude Include="CQuaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CGaussianElimination.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GD1M02Project.rc">

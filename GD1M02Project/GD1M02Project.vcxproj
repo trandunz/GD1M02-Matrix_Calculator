@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CGaussianElimination.h" />
     <ClInclude Include="CMatrix4.h" />
     <ClInclude Include="CQuaternion.h" />
     <ClInclude Include="resource.h" />
