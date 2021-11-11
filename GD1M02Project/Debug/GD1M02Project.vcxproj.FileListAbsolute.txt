@@ -1,3 +1,4 @@
 C:\Users\trand\Desktop\GD1M02Project\Debug\GD1M02Project.exe
 C:\Users\trand\Documents\GITHUB\GD1M02-Matrix_Calculator\GD1M02Project\Debug\GD1M02Project.exe
 D:\Projects\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\Debug\GD1M02Project.exe
+C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\Debug\GD1M02Project.exe

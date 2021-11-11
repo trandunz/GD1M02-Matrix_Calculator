@@ -33,7 +33,12 @@ public:
 
     inline void SetRowAndColumn(int _i, int _j, float _value)
     {
-        m_Matrix[_j][_j] = _value;
+        m_Matrix[_i][_j] = _value;
+    }
+
+    inline float GetRowAndColumn(int _i, int _j)
+    {
+        return m_Matrix[_i][_j];
     }
 
     inline void MultiplyRowByScalar(int _i, float _scalar)
@@ -46,23 +51,9 @@ public:
 
     inline void RowAddition(float _scalar, int _row, int _row2)
     {
-        float tempMatrix[3][4]{};
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                tempMatrix[i][j] = m_Matrix[i][j];
-            }
-        }
-        
         for (int j = 0; j < 4; j++)
         {
-            tempMatrix[_row][j] *= _scalar;
-        }
-
-        for (int j = 0; j < 4; j++)
-        {
-            m_Matrix[_row2][j] += tempMatrix[_row][j];
+            m_Matrix[_row2][j] += m_Matrix[_row][j] * _scalar;
         }
     }
 
@@ -92,7 +83,7 @@ public:
 
             /* find greater amplitude for pivot if any */
             for (int i = k + 1; i < 3; i++)
-                if (abs(m_Matrix[i][k]) > v_max)
+                if (abs(m_Matrix[i][k]) > (float)v_max)
                     v_max = m_Matrix[i][k], i_max = i;
 
             /* if a prinicipal diagonal element  is zero,
@@ -160,6 +151,65 @@ public:
             m_Matrix[_i][k] = m_Matrix[_i2][k];
             m_Matrix[_i2][k] = temp;
         }
+    }
+
+    inline bool IsInRowEchelon()
+    {
+        int iPrevCheckedJ = -1;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (m_Matrix[i][j] != 0)
+                {
+                    if (j > iPrevCheckedJ) { iPrevCheckedJ = j; }
+                    else { return false; }
+
+                    break;
+                }
+
+                if (j == 3) { return false; }
+            }
+        }
+
+        return true;
+    }
+
+    inline bool IsInReducedRowEchelon()
+    {
+        int iPrevCheckedJ = -1;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (m_Matrix[i][j] == 1)
+                {
+                    if (j > iPrevCheckedJ)
+                    {
+                        iPrevCheckedJ = j;
+
+                        for (int k = 0; k < i; k++)
+                        {
+                            if (m_Matrix[k][j] != 0) { return false; }
+                        }
+                        for (int l = 0; l < j; l++)
+                        {
+                            if (m_Matrix[i][l] != 0) { return false; }
+                        }
+
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                if (j == 3) { return false; }
+            }
+        }
+
+        return true;
     }
 
 private:

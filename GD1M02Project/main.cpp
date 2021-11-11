@@ -24,6 +24,7 @@
 // Local Includes
 #include "CMatrix4.h"
 #include "CQuaternion.h"
+#include "CGaussianElimination.h"
 
 void MakeWindow(HWND& hwnd, HINSTANCE& _hInstance);
 void InitHWND(WNDCLASSEX& winclass, HINSTANCE& _hInstance);
@@ -77,6 +78,15 @@ void WriteResultantQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
 void WriteBQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
 void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
 
+//Gaussian Elimination Functions
+bool ProcessGEInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGEMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGESwapInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGEAdditionInput(HWND& _hwnd, WPARAM& _wparam);
+void CheckEchelonForm(HWND& _hwnd);
+
+void WriteGEValues(HWND& _hwnd, WPARAM& _wparam);
+
 //Windows
 HMENU g_hMenu;
 HWND g_hDlgMatrix, g_hDlgTransformation, g_hDlgGaussian, g_hDlgQuaternion, g_hDlgSLERP;
@@ -84,6 +94,7 @@ HWND g_hDlgMatrix, g_hDlgTransformation, g_hDlgGaussian, g_hDlgQuaternion, g_hDl
 // Data Used
 CMatrix4 mat4A, mat4B, mat4Result;
 CQuaternion quatA, quatB, quatResult;
+CGaussianElimination geMatrix;
 
 LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
@@ -244,13 +255,14 @@ BOOL CALLBACK GaussianDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpa
 	{
 	case WM_COMMAND:
 	{
-		//switch (LOWORD(_wparam))
-		//{
-		//
-		//default:
-		//	break;
-		//}
-
+		//Process Input Fields
+		ProcessGEInput(_hwnd, _wparam);
+	
+		//Process Operations
+		if (ProcessGEAdditionInput(_hwnd, _wparam)) {}
+		else if (ProcessGESwapInput(_hwnd, _wparam)) {}
+		else if (ProcessGEMultiplyInput(_hwnd, _wparam)) {}
+	
 		return TRUE;
 	}
 	case WM_CLOSE:
@@ -1120,4 +1132,158 @@ void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT2, quatA.GetY());
 	WriteToEditBox(_hwnd, IDC_EDIT3, quatA.GetZ());
 	WriteToEditBox(_hwnd, IDC_EDIT4, quatA.GetW());
+}
+
+bool ProcessGEInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch ((LOWORD(_wparam)))
+	{
+	case IDC_EDIT1:
+	{
+		geMatrix.SetRowAndColumn(0, 0, ReadFromEditBox(_hwnd, IDC_EDIT1));
+		return TRUE;
+	}
+	case IDC_EDIT4:
+	{
+		geMatrix.SetRowAndColumn(0, 1, ReadFromEditBox(_hwnd, IDC_EDIT4));
+		return TRUE;
+	}
+	case IDC_EDIT2:
+	{
+		geMatrix.SetRowAndColumn(0, 2, ReadFromEditBox(_hwnd, IDC_EDIT2));
+		return TRUE;
+	}
+	case IDC_EDIT3:
+	{
+		geMatrix.SetRowAndColumn(0, 3, ReadFromEditBox(_hwnd, IDC_EDIT3));
+		return TRUE;
+	}
+	case IDC_EDIT5:
+	{
+		geMatrix.SetRowAndColumn(1, 0, ReadFromEditBox(_hwnd, IDC_EDIT5));
+		return TRUE;				
+	}								
+	case IDC_EDIT8:					
+	{								
+		geMatrix.SetRowAndColumn(1, 1, ReadFromEditBox(_hwnd, IDC_EDIT8));
+		return TRUE;				
+	}								
+	case IDC_EDIT6:					
+	{								
+		geMatrix.SetRowAndColumn(1, 2, ReadFromEditBox(_hwnd, IDC_EDIT6));
+		return TRUE;				
+	}								
+	case IDC_EDIT7:					
+	{								
+		geMatrix.SetRowAndColumn(1, 3, ReadFromEditBox(_hwnd, IDC_EDIT7));
+		return TRUE;
+	}
+	case IDC_EDIT9:
+	{
+		geMatrix.SetRowAndColumn(2, 0, ReadFromEditBox(_hwnd, IDC_EDIT9));
+		return TRUE;
+	}
+	case IDC_EDIT12:
+	{
+		geMatrix.SetRowAndColumn(2, 1, ReadFromEditBox(_hwnd, IDC_EDIT12));
+		return TRUE;
+	}
+	case IDC_EDIT10:
+	{
+		geMatrix.SetRowAndColumn(2, 2, ReadFromEditBox(_hwnd, IDC_EDIT10));
+		return TRUE;
+	}
+	case IDC_EDIT11:
+	{
+		geMatrix.SetRowAndColumn(2, 3, ReadFromEditBox(_hwnd, IDC_EDIT11));
+		return TRUE;
+	}
+	}
+
+	return FALSE;
+}
+
+bool ProcessGEMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON1)
+	{
+		geMatrix.MultiplyRowByScalar
+		(
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT13),
+			ReadFromEditBox(_hwnd, IDC_EDIT14)
+		);
+
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessGESwapInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON2)
+	{
+		geMatrix.SwapRow((int)ReadFromEditBox(_hwnd, IDC_EDIT16), (int)ReadFromEditBox(_hwnd, IDC_EDIT17));
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessGEAdditionInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON3)
+	{
+		geMatrix.RowAddition
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT19),
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT20),
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT22)
+		);
+
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void CheckEchelonForm(HWND& _hwnd)
+{
+	bool bIsInRowEchelon = geMatrix.IsInRowEchelon();
+	bool bIsInReducedRowEchelon = geMatrix.IsInReducedRowEchelon();
+
+	if (bIsInRowEchelon && bIsInReducedRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in row echelon form and in reduced row echelon form", L"", MB_OK);
+	}
+	else if (bIsInRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in row echelon form", L"", MB_OK);
+	}
+	else if (bIsInReducedRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in reduced row echelon form", L"", MB_OK);
+	}
+}
+
+void WriteGEValues(HWND& _hwnd, WPARAM& _wparam)
+{
+	WriteToEditBox(_hwnd, IDC_EDIT1, geMatrix.GetRowAndColumn(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT4, geMatrix.GetRowAndColumn(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT2, geMatrix.GetRowAndColumn(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT3, geMatrix.GetRowAndColumn(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT5, geMatrix.GetRowAndColumn(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT8, geMatrix.GetRowAndColumn(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT6, geMatrix.GetRowAndColumn(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT7, geMatrix.GetRowAndColumn(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT9, geMatrix.GetRowAndColumn(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT12, geMatrix.GetRowAndColumn(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT10, geMatrix.GetRowAndColumn(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT11, geMatrix.GetRowAndColumn(2, 3));
 }
