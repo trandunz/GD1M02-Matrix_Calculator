@@ -31,6 +31,41 @@ public:
         return *this;
     }
 
+    inline void SetRowAndColumn(int _i, int _j, float _value)
+    {
+        m_Matrix[_j][_j] = _value;
+    }
+
+    inline void MultiplyRowByScalar(int _i, float _scalar)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            m_Matrix[_i][j] *= _scalar;
+        }
+    }
+
+    inline void RowAddition(float _scalar, int _row, int _row2)
+    {
+        float tempMatrix[3][4]{};
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                tempMatrix[i][j] = m_Matrix[i][j];
+            }
+        }
+        
+        for (int j = 0; j < 4; j++)
+        {
+            tempMatrix[_row][j] *= _scalar;
+        }
+
+        for (int j = 0; j < 4; j++)
+        {
+            m_Matrix[_row2][j] += tempMatrix[_row][j];
+        }
+    }
+
     inline void GuassianElimination()
     {
         /* reduction into r.e.f. */
@@ -39,17 +74,6 @@ public:
         /* if matrix is singular */
         if (singular_flag != -1)
         {
-            printf("Singular Matrix.\n");
-
-            /* if the RHS of equation corresponding to
-               zero row  is 0, * system has infinitely
-               many solutions, else inconsistent*/
-            if (m_Matrix[singular_flag][3])
-                printf("Inconsistent System.");
-            else
-                printf("May have infinitely many "
-                    "solutions.");
-
             return;
         }
 
@@ -96,10 +120,8 @@ public:
                 /* filling lower triangular m_Matrixrix with zeros*/
                 m_Matrix[i][k] = 0;
             }
-
-            //print(m_Matrix);        //for m_Matrixrix state
         }
-        //print(m_Matrix);            //for m_Matrixrix state
+
         return -1;
 	}
 
@@ -107,8 +129,8 @@ public:
     {
         float x[3];  // An array to store solution
 
-    /* Start calculating from last equation up to the
-       first */
+        /* Start calculating from last equation up to the
+            first */
         for (int i = 2; i >= 0; i--)
         {
             /* start with the RHS of the equation */
@@ -128,19 +150,15 @@ public:
                unknown being calculated */
             x[i] = x[i] / m_Matrix[i][i];
         }
-
-        printf("\nSolution for the system:\n");
-        for (int i = 0; i < 3; i++)
-            printf("%lf\n", x[i]);
     }
 
-    inline void SwapRow(int _i, int _j)
+    inline void SwapRow(int _i, int _i2)
     {
         for (int k = 0; k <= 3; k++)
         {
             float temp = m_Matrix[_i][k];
-            m_Matrix[_i][k] = m_Matrix[_j][k];
-            m_Matrix[_j][k] = temp;
+            m_Matrix[_i][k] = m_Matrix[_i2][k];
+            m_Matrix[_i2][k] = temp;
         }
     }
 
