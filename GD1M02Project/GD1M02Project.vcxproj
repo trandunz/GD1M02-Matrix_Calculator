@@ -143,6 +143,7 @@
     <ClInclude Include="CMatrix4.h" />
     <ClInclude Include="CQuaternion.h" />
     <ClInclude Include="CSlerp.h" />
+    <ClInclude Include="CTransformation.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
