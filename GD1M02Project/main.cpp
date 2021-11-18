@@ -92,12 +92,11 @@ void WriteGEValues(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessQuaternionASlerpInput(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessQuaternionBSlerpInput(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessQuaternionResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam);
-bool ProcessMatrixResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam);
 
 bool ProcessSlerpInput(HWND& _hwnd, WPARAM& _wparam);
-bool ProcessInducedMatrixAInput(HWND& _hwnd, WPARAM& _wparam); //
-bool ProcessInducedMatrixBInput(HWND& _hwnd, WPARAM& _wparam); //
-bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam); //
+bool ProcessInducedMatrixAInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInducedMatrixBInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam);
 
 void WriteQuaternionResultantSlerp(HWND& _hwnd, WPARAM& _wparam);
 void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam);
@@ -161,22 +160,23 @@ LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 		case ID_CALCULATOR_TRANSFORMATION:
 		{
 			ShowWindow(g_hDlgTransformation, SW_SHOWNORMAL);
+			mat4Result.SetToZero();
 			break;
 		}
-		// Open Matrix Dialog
 		case ID_CALCULATOR_GAUSSIAN:
 		{
 			ShowWindow(g_hDlgGaussian, SW_SHOWNORMAL);
-			break;
-		}
-		// Open Gaussian Dialog
-		case ID_CALCULATOR_QUATERNION:
-		{
-			ShowWindow(g_hDlgQuaternion, SW_SHOWNORMAL);
 			geMatrix.SetToZero();
 			break;
 		}
-		// Open Quaternion Dialog
+		case ID_CALCULATOR_QUATERNION:
+		{
+			ShowWindow(g_hDlgQuaternion, SW_SHOWNORMAL);
+			quatA.SetToZero();
+			quatB.SetToZero();
+			quatResult.SetToZero();
+			break;
+		}
 		case ID_CALCULATOR_SLERP:
 		{
 			ShowWindow(g_hDlgSLERP, SW_SHOWNORMAL);
@@ -346,7 +346,6 @@ BOOL CALLBACK SLERPDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam
 		if (ProcessQuaternionASlerpInput(_hwnd, _wparam)) {}
 		else if (ProcessQuaternionBSlerpInput(_hwnd, _wparam)) {}
 		else if (ProcessQuaternionResultantSlerpInput(_hwnd, _wparam)) {}
-		else if (ProcessMatrixResultantSlerpInput(_hwnd, _wparam)) {}
 
 		//Process Operations
 		if (ProcessSlerpInput(_hwnd, _wparam)) {}
@@ -1406,95 +1405,6 @@ bool ProcessQuaternionResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam)
 	return FALSE;
 }
 
-bool ProcessMatrixResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam)
-{
-	switch ((LOWORD(_wparam)))
-	{
-	case IDC_EDIT34:
-	{
-		mat4Result(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT34);
-		return TRUE;
-	}
-	case IDC_EDIT35:
-	{
-		mat4Result(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT35);
-		return TRUE;
-	}
-	case IDC_EDIT36:
-	{
-		mat4Result(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT36);
-		return TRUE;
-	}
-	case IDC_EDIT37:
-	{
-		mat4Result(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT37);
-		return TRUE;
-	}
-	case IDC_EDIT38:
-	{
-		mat4Result(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT38);
-		return TRUE;
-	}
-	case IDC_EDIT39:
-	{
-		mat4Result(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT39);
-		return TRUE;
-	}
-	case IDC_EDIT40:
-	{
-		mat4Result(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT40);
-		return TRUE;
-	}
-	case IDC_EDIT41:
-	{
-		mat4Result(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT41);
-		return TRUE;
-	}
-	case IDC_EDIT42:
-	{
-		mat4Result(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT42);
-		return TRUE;
-	}
-	case IDC_EDIT43:
-	{
-		mat4Result(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT43);
-		return TRUE;
-	}
-	case IDC_EDIT44:
-	{
-		mat4Result(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT44);
-		return TRUE;
-	}
-	case IDC_EDIT45:
-	{
-		mat4Result(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT45);
-		return TRUE;
-	}
-	case IDC_EDIT46:
-	{
-		mat4Result(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT46);
-		return TRUE;
-	}
-	case IDC_EDIT47:
-	{
-		mat4Result(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT47);
-		return TRUE;
-	}
-	case IDC_EDIT48:
-	{
-		mat4Result(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT48);
-		return TRUE;
-	}
-	case IDC_EDIT49:
-	{
-		mat4Result(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT49);
-		return TRUE;
-	}
-	}
-
-	return FALSE;
-}
-
 bool ProcessSlerpInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDC_BUTTON1)
@@ -1539,8 +1449,9 @@ bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON4)
 	{
 		quatResult = CSlerp::Slerp(quatA, quatB, ReadFromEditBox(_hwnd, IDC_EDIT9));
-		WriteQuaternionResultantSlerp(_hwnd, _wparam);
 		mat4Result = quatResult.InducedMatrix();
+
+		WriteQuaternionResultantSlerp(_hwnd, _wparam);
 		WriteResultantSlerpMatrix(_hwnd, _wparam);
 
 		return TRUE;

@@ -1,10 +1,10 @@
 ﻿  main.cpp
 C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CGaussianElimination.h(82,23): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(48,2): warning C4091: 'static ': ignored on left of 'CSlerp' when no variable is declared
-C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(22,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(49,2): warning C4091: 'static ': ignored on left of 'CSlerp' when no variable is declared
 C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(23,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(24,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(25,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(29,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(30,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(26,15): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(30,24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\CSlerp.h(31,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   GD1M02Project.vcxproj -> C:\Users\micha\Documents\GitHub\GD1M02-Matrix_Calculator\GD1M02Project\Debug\GD1M02Project.exe

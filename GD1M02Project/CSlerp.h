@@ -14,7 +14,8 @@ public:
 	{
 		CQuaternion a = _qA;
 		CQuaternion b = _qB;
-		float theta = _qA.DotProduct(_qB);
+		float theta = acosf(_qA.DotProduct(_qB) / (_qA.GetMagnitude() * _qB.GetMagnitude()));
+		//theta = acosf(theta);
 
 		// Small Angle ? Lerp : Slerp
 		if (theta <= 0.01 && theta >= -0.01)
@@ -26,8 +27,8 @@ public:
 		}
 		else
 		{
-			a *= (sin((1 - _t) * theta) / sin(theta));
-			b *= ((sin(_t * theta)) / (sin(theta)));
+			a *= (sinf((1 - _t) * theta)) / (sinf(theta));
+			b *= (sinf(_t * theta)) / (sinf(theta));
 			a += b;
 		}
 
