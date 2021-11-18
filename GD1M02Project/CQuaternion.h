@@ -146,6 +146,18 @@ public:
 
 		mat4Result(3, 3) = 1.0f;
 
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				if (mat4Result(i, j) < 0.0001f)
+				{
+					int iTemp = (int)(mat4Result(i, j) * 10000.0f);
+					mat4Result(i, j) = ((float)iTemp) * 0.0001f;
+				}
+			}
+		}
+
 		return mat4Result;
 	}
 
