@@ -2,6 +2,8 @@
 #ifndef _TRANSFORMATION_H__
 #define _TRANSFORMATION_H__
 
+#define PI 3.141592653589793238462643383279
+
 #include "CMatrix4.h"
 #include <cmath>
 
@@ -38,7 +40,7 @@ public:
 		CMatrix4 mat4Result;
 		mat4Result.SetToIdentity();
 		
-		if (IsDeg) { _fAngle *= 3.14159f / 180.0f; }
+		if (IsDeg) { _fAngle *= PI / 180.0f; }
 
 		switch (_iAxisOfRotation)
 		{

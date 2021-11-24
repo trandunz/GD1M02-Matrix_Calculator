@@ -26,6 +26,7 @@
 #include "CQuaternion.h"
 #include "CGaussianElimination.h"
 #include "CSlerp.h"
+#include "CTransformation.h"
 
 void MakeWindow(HWND& hwnd, HINSTANCE& _hInstance);
 void InitHWND(WNDCLASSEX& winclass, HINSTANCE& _hInstance);
@@ -100,6 +101,10 @@ bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam);
 
 void WriteQuaternionResultantSlerp(HWND& _hwnd, WPARAM& _wparam);
 void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam);
+
+// Transformation Functions
+bool ProcessScale(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessTranslation(HWND& _hwnd, WPARAM& _wparam);
 
 //Windows
 HMENU g_hMenu;
@@ -258,14 +263,9 @@ BOOL CALLBACK TransformationDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARA
 	{
 	case WM_COMMAND:
 	{
-		//switch (LOWORD(_wparam))
-		//{
-		//
-		//default:
-		//	break;
-		//}
 		
-	return TRUE;
+		
+		return TRUE;
 	}
 	case WM_CLOSE:
 	{
@@ -1486,4 +1486,68 @@ void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(3, 1));
 	WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(3, 2));
 	WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(3, 3));
+}
+
+bool ProcessScale(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON4)
+	{
+		mat4Result = CTransformation::Scale(ReadFromEditBox(_hwnd, IDC_EDIT1), ReadFromEditBox(_hwnd, IDC_EDIT2), ReadFromEditBox(_hwnd, IDC_EDIT3));
+		
+		return TRUE;
+	}
+	return false;
+}
+
+bool ProcessTranslation(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON15)
+	{
+		mat4Result = CTransformation::Translation(ReadFromEditBox(_hwnd, IDC_EDIT4), ReadFromEditBox(_hwnd, IDC_EDIT5), ReadFromEditBox(_hwnd, IDC_EDIT6));
+
+		return TRUE;
+	}
+	return false;
+}
+
+bool ProcessRotation(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON16)
+	{
+		if (IDC_RADIO1 == true)
+		{
+			mat4Result = CTransformation::EulerRotation(0, ReadFromEditBox(_hwnd, IDC_EDIT13));
+		}
+		else if (IDC_RADIO2 == true)
+		{
+			mat4Result = CTransformation::EulerRotation(1, ReadFromEditBox(_hwnd, IDC_EDIT13));
+		}
+		else if (IDC_RADIO3 == true)
+		{
+			mat4Result = CTransformation::EulerRotation(2, ReadFromEditBox(_hwnd, IDC_EDIT13));
+		}
+		return TRUE;
+	}
+	return false;
+}
+
+bool ProcessProjection(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON17)
+	{
+		if (IDC_RADIO4 == true)
+		{
+			mat4Result = CTransformation::Projection(0, ReadFromEditBox(_hwnd, IDC_EDIT15));
+		}
+		else if (IDC_RADIO5 == true)
+		{
+			mat4Result = CTransformation::Projection(1, ReadFromEditBox(_hwnd, IDC_EDIT15));
+		}
+		else if (IDC_RADIO6 == true)
+		{
+			mat4Result = CTransformation::Projection(2, ReadFromEditBox(_hwnd, IDC_EDIT15));
+		}
+		return TRUE;
+	}
+	return false;
 }
