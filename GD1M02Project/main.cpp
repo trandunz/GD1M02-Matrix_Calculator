@@ -102,9 +102,15 @@ bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam);
 void WriteQuaternionResultantSlerp(HWND& _hwnd, WPARAM& _wparam);
 void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam);
 
-// Transformation Functions
-bool ProcessScale(HWND& _hwnd, WPARAM& _wparam);
-bool ProcessTranslation(HWND& _hwnd, WPARAM& _wparam);
+//Transformation Functions
+bool ProcessResultantTransformationMatrixInput(HWND& _hwnd, WPARAM& _wparam);
+
+bool ProcessScaleTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessTranslateTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessRotateTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessProjectTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+
+void WriteResultantTransformationMatrix(HWND& _hwnd, WPARAM& _wparam);
 
 //Windows
 HMENU g_hMenu;
@@ -165,7 +171,7 @@ LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 		case ID_CALCULATOR_TRANSFORMATION:
 		{
 			ShowWindow(g_hDlgTransformation, SW_SHOWNORMAL);
-			mat4Result.SetToZero();
+			mat4Result.SetToIdentity();
 			break;
 		}
 		case ID_CALCULATOR_GAUSSIAN:
@@ -263,8 +269,15 @@ BOOL CALLBACK TransformationDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARA
 	{
 	case WM_COMMAND:
 	{
-		
-		
+		//Process Input Fields
+		if (ProcessResultantTransformationMatrixInput(_hwnd, _wparam)) {};
+
+		//Process Operations
+		if (ProcessScaleTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessTranslateTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessRotateTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessProjectTransformationInput(_hwnd, _wparam)) {}
+
 		return TRUE;
 	}
 	case WM_CLOSE:
@@ -1488,66 +1501,210 @@ void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(3, 3));
 }
 
-bool ProcessScale(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessResultantTransformationMatrixInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch (LOWORD(_wparam))
+	{
+	case IDC_EDIT16:
+		mat4Result(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT16);
+		WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(0, 0));
+		return TRUE;
+
+	case IDC_EDIT18:
+		mat4Result(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT18);
+		WriteToEditBox(_hwnd, IDC_EDIT51, mat4Result(0, 1));
+		return TRUE;
+
+	case IDC_EDIT19:
+		mat4Result(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT19);
+		WriteToEditBox(_hwnd, IDC_EDIT55, mat4Result(0, 2));
+		return TRUE;
+
+	case IDC_EDIT20:
+		mat4Result(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT20);
+		WriteToEditBox(_hwnd, IDC_EDIT59, mat4Result(0, 3));
+		return TRUE;
+	
+	
+	case IDC_EDIT21:
+		mat4Result(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT21);
+		WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(1, 0));
+		return TRUE;
+
+	case IDC_EDIT22:
+		mat4Result(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT22);
+		WriteToEditBox(_hwnd, IDC_EDIT52, mat4Result(1, 1));
+		return TRUE;
+
+	case IDC_EDIT23:
+		mat4Result(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT23);
+		WriteToEditBox(_hwnd, IDC_EDIT56, mat4Result(1, 2));
+		return TRUE;
+
+	case IDC_EDIT8:
+		mat4Result(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT8);
+		WriteToEditBox(_hwnd, IDC_EDIT60, mat4Result(1, 3));
+		return TRUE;
+
+
+	case IDC_EDIT9:
+		mat4Result(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT9);
+		WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(2, 0));
+		return TRUE;
+
+	case IDC_EDIT10:
+		mat4Result(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT10);
+		WriteToEditBox(_hwnd, IDC_EDIT53, mat4Result(2, 1));
+		return TRUE;
+
+	case IDC_EDIT11:
+		mat4Result(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT11);
+		WriteToEditBox(_hwnd, IDC_EDIT57, mat4Result(2, 2));
+		return TRUE;
+
+	case IDC_EDIT12:
+		mat4Result(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT12);
+		WriteToEditBox(_hwnd, IDC_EDIT61, mat4Result(2, 3));
+		return TRUE;
+
+
+	case IDC_EDIT24:
+		mat4Result(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT24);
+		WriteToEditBox(_hwnd, IDC_EDIT50, mat4Result(3, 0));
+		return TRUE;
+
+	case IDC_EDIT25:
+		mat4Result(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT25);
+		WriteToEditBox(_hwnd, IDC_EDIT54, mat4Result(3, 1));
+		return TRUE;
+
+	case IDC_EDIT26:
+		mat4Result(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT26);
+		WriteToEditBox(_hwnd, IDC_EDIT58, mat4Result(3, 2));
+		return TRUE;
+
+	case IDC_EDIT27:
+		mat4Result(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT27);
+		WriteToEditBox(_hwnd, IDC_EDIT62, mat4Result(3, 3));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessScaleTransformationInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDC_BUTTON4)
 	{
-		mat4Result = CTransformation::Scale(ReadFromEditBox(_hwnd, IDC_EDIT1), ReadFromEditBox(_hwnd, IDC_EDIT2), ReadFromEditBox(_hwnd, IDC_EDIT3));
-		
+		mat4Result *= CTransformation::Scale
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT1),
+			ReadFromEditBox(_hwnd, IDC_EDIT2),
+			ReadFromEditBox(_hwnd, IDC_EDIT3)
+		);
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
 		return TRUE;
 	}
-	return false;
+
+	return FALSE;
 }
 
-bool ProcessTranslation(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessTranslateTransformationInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDC_BUTTON15)
 	{
-		mat4Result = CTransformation::Translation(ReadFromEditBox(_hwnd, IDC_EDIT4), ReadFromEditBox(_hwnd, IDC_EDIT5), ReadFromEditBox(_hwnd, IDC_EDIT6));
+		mat4Result *= CTransformation::Translation
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT4),
+			ReadFromEditBox(_hwnd, IDC_EDIT5),
+			ReadFromEditBox(_hwnd, IDC_EDIT6)
+		);
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
-	return false;
+
+	return FALSE;
 }
 
-bool ProcessRotation(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessRotateTransformationInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDC_BUTTON16)
 	{
-		if (IDC_RADIO1 == true)
-		{
-			mat4Result = CTransformation::EulerRotation(0, ReadFromEditBox(_hwnd, IDC_EDIT13));
-		}
-		else if (IDC_RADIO2 == true)
-		{
-			mat4Result = CTransformation::EulerRotation(1, ReadFromEditBox(_hwnd, IDC_EDIT13));
-		}
-		else if (IDC_RADIO3 == true)
-		{
-			mat4Result = CTransformation::EulerRotation(2, ReadFromEditBox(_hwnd, IDC_EDIT13));
-		}
+		unsigned int uAxisOfRotation = 0;
+		if (IsDlgButtonChecked(_hwnd, IDC_RADIO1)) { uAxisOfRotation = 0; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO2)) { uAxisOfRotation = 1; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO3)) { uAxisOfRotation = 2; }
+
+		mat4Result *= CTransformation::EulerRotation(uAxisOfRotation, ReadFromEditBox(_hwnd, IDC_EDIT13));
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
 		return TRUE;
 	}
-	return false;
+
+	return FALSE;
 }
 
-bool ProcessProjection(HWND& _hwnd, WPARAM& _wparam)
+bool ProcessProjectTransformationInput(HWND& _hwnd, WPARAM& _wparam)
 {
 	if (_wparam == IDC_BUTTON17)
 	{
-		if (IDC_RADIO4 == true)
-		{
-			mat4Result = CTransformation::Projection(0, ReadFromEditBox(_hwnd, IDC_EDIT15));
-		}
-		else if (IDC_RADIO5 == true)
-		{
-			mat4Result = CTransformation::Projection(1, ReadFromEditBox(_hwnd, IDC_EDIT15));
-		}
-		else if (IDC_RADIO6 == true)
-		{
-			mat4Result = CTransformation::Projection(2, ReadFromEditBox(_hwnd, IDC_EDIT15));
-		}
+		unsigned int uAxisOfProjection = 0;
+		if (IsDlgButtonChecked(_hwnd, IDC_RADIO4)) { uAxisOfProjection = 0; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO5)) { uAxisOfProjection = 1; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO6)) { uAxisOfProjection = 2; }
+
+		mat4Result *= CTransformation::Projection(uAxisOfProjection, ReadFromEditBox(_hwnd, IDC_EDIT15));
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
 		return TRUE;
 	}
-	return false;
+
+	return FALSE;
+}
+
+void WriteResultantTransformationMatrix(HWND& _hwnd, WPARAM& _wparam)
+{
+	//Column-Major Format
+	WriteToEditBox(_hwnd, IDC_EDIT16, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT18, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT19, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT20, mat4Result(0, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT21, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT22, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT23, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT8,  mat4Result(1, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT9,  mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT10, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT11, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT12, mat4Result(2, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT24, mat4Result(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT25, mat4Result(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT26, mat4Result(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT27, mat4Result(3, 3));
+
+	//Row-Major Format
+	WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT50, mat4Result(3, 0));
+
+	WriteToEditBox(_hwnd, IDC_EDIT51, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT52, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT53, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT54, mat4Result(3, 1));
+
+	WriteToEditBox(_hwnd, IDC_EDIT55, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT56, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT57, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT58, mat4Result(3, 2));
+
+	WriteToEditBox(_hwnd, IDC_EDIT59, mat4Result(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT60, mat4Result(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT61, mat4Result(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT62, mat4Result(3, 3));
 }

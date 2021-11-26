@@ -237,7 +237,7 @@ public:
         return m_fData[_i][_j];
     }
 
-    inline CMatrix4 operator + (CMatrix4& _rhs)
+    inline CMatrix4 operator + (CMatrix4 _rhs)
     {
         CMatrix4 mat4Result = *this;
         for (int i = 0; i < 4; i++)
@@ -251,14 +251,14 @@ public:
         return mat4Result;
     }
 
-    inline CMatrix4& operator += (CMatrix4& _rhs)
+    inline CMatrix4& operator += (CMatrix4 _rhs)
     {
         *this = *this + _rhs;
 
         return *this;
     }
 
-    inline CMatrix4 operator - (CMatrix4& _rhs)
+    inline CMatrix4 operator - (CMatrix4 _rhs)
     {
         CMatrix4 mat4Result = *this;
         for (int i = 0; i < 4; i++)
@@ -272,14 +272,14 @@ public:
         return mat4Result;
     }
 
-    inline CMatrix4& operator -= (CMatrix4& _rhs)
+    inline CMatrix4& operator -= (CMatrix4 _rhs)
     {
         *this = *this - _rhs;
 
         return *this;
     }
 
-    inline CMatrix4 operator * (CMatrix4& _rhs)
+    inline CMatrix4 operator * (CMatrix4 _rhs)
     {
         CMatrix4 mat4Result;
 
@@ -297,7 +297,7 @@ public:
         return mat4Result;
     }
 
-    inline CMatrix4& operator *= (CMatrix4& _rhs)
+    inline CMatrix4& operator *= (CMatrix4 _rhs)
     {
         *this = *this * _rhs;
 

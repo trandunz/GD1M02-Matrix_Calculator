@@ -10,7 +10,7 @@
 static class CSlerp
 {
 public:
-	static CQuaternion Slerp(CQuaternion& _qA, CQuaternion& _qB, double _t)
+	static CQuaternion Slerp(CQuaternion& _qA, CQuaternion& _qB, float _t)
 	{
 		CQuaternion a = _qA;
 		CQuaternion b = _qB;
@@ -34,15 +34,15 @@ public:
 		return a;
 	}
 
-	static inline double Lerp(double _a, double _b, double _t)
+	static inline float Lerp(float _a, float _b, float _t)
 	{
-		if (_t <= 0.5)
+		if (_t <= 0.5f)
 		{
-			return _a + (_b - _a) * _t;
+			return _a + ((_b - _a) * _t);
 		}
 		else
 		{
-			return _b - (_b - _a) * (1.0 - _t);
+			return _b - ((_b - _a) * (1.0f - _t));
 		}
 	}
 };

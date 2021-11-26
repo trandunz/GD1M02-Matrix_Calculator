@@ -2,8 +2,6 @@
 #ifndef _TRANSFORMATION_H__
 #define _TRANSFORMATION_H__
 
-#define PI 3.141592653589793238462643383279
-
 #include "CMatrix4.h"
 #include <cmath>
 
@@ -34,15 +32,15 @@ public:
 		return mat4Result;
 	}
 	
-	static CMatrix4 EulerRotation(unsigned int _iAxisOfRotation, float _fAngle, bool IsDeg = true)
+	static CMatrix4 EulerRotation(unsigned int _uAxisOfRotation, float _fAngle, bool _bIsDeg = true)
 	{
 		//For _iAxisOfRotation, 0 = X-axis, 1 = Y-axis, 2 = Z-axis
 		CMatrix4 mat4Result;
 		mat4Result.SetToIdentity();
 		
-		if (IsDeg) { _fAngle *= PI / 180.0f; }
+		if (_bIsDeg) { _fAngle *= 3.14159f / 180.0f; }
 
-		switch (_iAxisOfRotation)
+		switch (_uAxisOfRotation)
 		{
 		case 0:
 			mat4Result(1, 1) = cosf(_fAngle);
@@ -67,20 +65,16 @@ public:
 		return mat4Result;
 	}
 	
-	static CMatrix4 Projection(float _fDistanceFromViewer, float _fAngle)
+	static CMatrix4 Projection(unsigned int _uAxisOfProjection, float _fDistanceFromViewer)
 	{
-		//For _iAxisOfRotation, 0 = X-axis, 1 = Y-axis, 2 = Z-axis
+		//For _uAxisOfProjection, 0 = X-axis, 1 = Y-axis, 2 = Z-axis
 		CMatrix4 mat4Result;
 		mat4Result.SetToIdentity();
 
-		mat4Result(3, 3) = 0;
 		if (_fDistanceFromViewer != 0)
 		{
-			mat4Result(3, 2) = 1.0f / _fDistanceFromViewer;
-		}
-		else
-		{
-			mat4Result(3, 2) = 0.0f;
+			mat4Result(3, 3) = 0;
+			mat4Result(3, _uAxisOfProjection) = 1.0f / _fDistanceFromViewer;
 		}
 		
 		return mat4Result;
