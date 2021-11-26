@@ -24,6 +24,12 @@
 // Local Includes
 #include "CMatrix4.h"
 #include "CQuaternion.h"
+<<<<<<< Updated upstream
+=======
+#include "CGaussianElimination.h"
+#include "CSlerp.h"
+#include "CTransformation.h"
+>>>>>>> Stashed changes
 
 void MakeWindow(HWND& hwnd, HINSTANCE& _hInstance);
 void InitHWND(WNDCLASSEX& winclass, HINSTANCE& _hInstance);
@@ -76,6 +82,16 @@ bool ProcessQuaternionBScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
 void WriteResultantQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
 void WriteBQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
 void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
+
+//Transformation Functions
+bool ProcessResultantTransformationMatrixInput(HWND& _hwnd, WPARAM& _wparam);
+
+bool ProcessScaleTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessTranslateTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessRotateTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessProjectTransformationInput(HWND& _hwnd, WPARAM& _wparam);
+
+void WriteResultantTransformationMatrix(HWND& _hwnd, WPARAM& _wparam);
 
 //Windows
 HMENU g_hMenu;
@@ -132,6 +148,10 @@ LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 		case ID_CALCULATOR_TRANSFORMATION:
 		{
 			ShowWindow(g_hDlgTransformation, SW_SHOWNORMAL);
+<<<<<<< Updated upstream
+=======
+			mat4Result.SetToIdentity();
+>>>>>>> Stashed changes
 			break;
 		}
 		// Open Matrix Dialog
@@ -220,14 +240,16 @@ BOOL CALLBACK TransformationDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARA
 	{
 	case WM_COMMAND:
 	{
-		//switch (LOWORD(_wparam))
-		//{
-		//
-		//default:
-		//	break;
-		//}
-		
-	return TRUE;
+		//Process Input Fields
+		if (ProcessResultantTransformationMatrixInput(_hwnd, _wparam)) {};
+
+		//Process Operations
+		if (ProcessScaleTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessTranslateTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessRotateTransformationInput(_hwnd, _wparam)) {}
+		else if (ProcessProjectTransformationInput(_hwnd, _wparam)) {}
+
+		return TRUE;
 	}
 	case WM_CLOSE:
 	{
@@ -1120,4 +1142,540 @@ void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT2, quatA.GetY());
 	WriteToEditBox(_hwnd, IDC_EDIT3, quatA.GetZ());
 	WriteToEditBox(_hwnd, IDC_EDIT4, quatA.GetW());
+<<<<<<< Updated upstream
 }
+=======
+}
+
+bool ProcessGEInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch ((LOWORD(_wparam)))
+	{
+	case IDC_EDIT1:
+	{
+		geMatrix.SetRowAndColumn(0, 0, ReadFromEditBox(_hwnd, IDC_EDIT1));
+		return TRUE;
+	}
+	case IDC_EDIT4:
+	{
+		geMatrix.SetRowAndColumn(0, 1, ReadFromEditBox(_hwnd, IDC_EDIT4));
+		return TRUE;
+	}
+	case IDC_EDIT2:
+	{
+		geMatrix.SetRowAndColumn(0, 2, ReadFromEditBox(_hwnd, IDC_EDIT2));
+		return TRUE;
+	}
+	case IDC_EDIT3:
+	{
+		geMatrix.SetRowAndColumn(0, 3, ReadFromEditBox(_hwnd, IDC_EDIT3));
+		return TRUE;
+	}
+	case IDC_EDIT5:
+	{
+		geMatrix.SetRowAndColumn(1, 0, ReadFromEditBox(_hwnd, IDC_EDIT5));
+		return TRUE;				
+	}								
+	case IDC_EDIT8:					
+	{								
+		geMatrix.SetRowAndColumn(1, 1, ReadFromEditBox(_hwnd, IDC_EDIT8));
+		return TRUE;				
+	}								
+	case IDC_EDIT6:					
+	{								
+		geMatrix.SetRowAndColumn(1, 2, ReadFromEditBox(_hwnd, IDC_EDIT6));
+		return TRUE;				
+	}								
+	case IDC_EDIT7:					
+	{								
+		geMatrix.SetRowAndColumn(1, 3, ReadFromEditBox(_hwnd, IDC_EDIT7));
+		return TRUE;
+	}
+	case IDC_EDIT9:
+	{
+		geMatrix.SetRowAndColumn(2, 0, ReadFromEditBox(_hwnd, IDC_EDIT9));
+		return TRUE;
+	}
+	case IDC_EDIT12:
+	{
+		geMatrix.SetRowAndColumn(2, 1, ReadFromEditBox(_hwnd, IDC_EDIT12));
+		return TRUE;
+	}
+	case IDC_EDIT10:
+	{
+		geMatrix.SetRowAndColumn(2, 2, ReadFromEditBox(_hwnd, IDC_EDIT10));
+		return TRUE;
+	}
+	case IDC_EDIT11:
+	{
+		geMatrix.SetRowAndColumn(2, 3, ReadFromEditBox(_hwnd, IDC_EDIT11));
+		return TRUE;
+	}
+	}
+
+	return FALSE;
+}
+
+bool ProcessGEMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON1)
+	{
+		geMatrix.MultiplyRowByScalar
+		(
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT13),
+			ReadFromEditBox(_hwnd, IDC_EDIT14)
+		);
+
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessGESwapInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON2)
+	{
+		geMatrix.SwapRow((int)ReadFromEditBox(_hwnd, IDC_EDIT16), (int)ReadFromEditBox(_hwnd, IDC_EDIT17));
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessGEAdditionInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON3)
+	{
+		geMatrix.RowAddition
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT19),
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT20),
+			(int)ReadFromEditBox(_hwnd, IDC_EDIT22)
+		);
+
+		WriteGEValues(_hwnd, _wparam);
+		CheckEchelonForm(_hwnd);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void CheckEchelonForm(HWND& _hwnd)
+{
+	bool bIsInRowEchelon = geMatrix.IsInRowEchelon();
+	bool bIsInReducedRowEchelon = geMatrix.IsInReducedRowEchelon();
+
+	if (bIsInRowEchelon && bIsInReducedRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in row echelon form and in reduced row echelon form", L"", MB_OK);
+	}
+	else if (bIsInRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in row echelon form", L"", MB_OK);
+	}
+	else if (bIsInReducedRowEchelon)
+	{
+		MessageBox(_hwnd, L"The matrix is in reduced row echelon form", L"", MB_OK);
+	}
+}
+
+void WriteGEValues(HWND& _hwnd, WPARAM& _wparam)
+{
+	WriteToEditBox(_hwnd, IDC_EDIT1, geMatrix.GetRowAndColumn(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT4, geMatrix.GetRowAndColumn(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT2, geMatrix.GetRowAndColumn(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT3, geMatrix.GetRowAndColumn(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT5, geMatrix.GetRowAndColumn(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT8, geMatrix.GetRowAndColumn(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT6, geMatrix.GetRowAndColumn(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT7, geMatrix.GetRowAndColumn(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT9, geMatrix.GetRowAndColumn(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT12, geMatrix.GetRowAndColumn(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT10, geMatrix.GetRowAndColumn(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT11, geMatrix.GetRowAndColumn(2, 3));
+}
+
+bool ProcessQuaternionASlerpInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch (LOWORD(_wparam))
+	{
+	case IDC_EDIT1:
+	{
+		quatA.SetX(ReadFromEditBox(_hwnd, IDC_EDIT1));
+		return TRUE;
+	}
+	case IDC_EDIT2:
+	{
+		quatA.SetY(ReadFromEditBox(_hwnd, IDC_EDIT2));
+		return TRUE;
+	}
+	case IDC_EDIT3:
+	{
+		quatA.SetZ(ReadFromEditBox(_hwnd, IDC_EDIT3));
+		return TRUE;
+	}
+	case IDC_EDIT4:
+	{
+		quatA.SetW(ReadFromEditBox(_hwnd, IDC_EDIT4));
+		return TRUE;
+	}
+	}
+
+	return FALSE;
+}
+
+bool ProcessQuaternionBSlerpInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch (LOWORD(_wparam))
+	{
+	case IDC_EDIT5:
+	{
+		quatB.SetX(ReadFromEditBox(_hwnd, IDC_EDIT5));
+		return TRUE;
+	}
+	case IDC_EDIT6:
+	{
+		quatB.SetY(ReadFromEditBox(_hwnd, IDC_EDIT6));
+		return TRUE;
+	}
+	case IDC_EDIT7:
+	{
+		quatB.SetZ(ReadFromEditBox(_hwnd, IDC_EDIT7));
+		return TRUE;
+	}
+	case IDC_EDIT8:
+	{
+		quatB.SetW(ReadFromEditBox(_hwnd, IDC_EDIT8));
+		return TRUE;
+	}
+	}
+
+	return FALSE;
+}
+
+bool ProcessQuaternionResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch (LOWORD(_wparam))
+	{
+	case IDC_EDIT10:
+	{
+		quatResult.SetX(ReadFromEditBox(_hwnd, IDC_EDIT10));
+		return TRUE;
+	}
+	case IDC_EDIT11:
+	{
+		quatResult.SetY(ReadFromEditBox(_hwnd, IDC_EDIT11));
+		return TRUE;
+	}
+	case IDC_EDIT12:
+	{
+		quatResult.SetZ(ReadFromEditBox(_hwnd, IDC_EDIT12));
+		return TRUE;
+	}
+	case IDC_EDIT13:
+	{
+		quatResult.SetW(ReadFromEditBox(_hwnd, IDC_EDIT13));
+		return TRUE;
+	}
+	}
+
+	return FALSE;
+}
+
+bool ProcessSlerpInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON1)
+	{
+		quatResult = CSlerp::Slerp(quatA, quatB, ReadFromEditBox(_hwnd, IDC_EDIT9));
+		WriteQuaternionResultantSlerp(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessInducedMatrixAInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON2)
+	{
+		mat4Result = quatA.InducedMatrix();
+		WriteResultantSlerpMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return false;
+}
+
+bool ProcessInducedMatrixBInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON3)
+	{
+		mat4Result = quatB.InducedMatrix();
+		WriteResultantSlerpMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return false;
+}
+
+bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON4)
+	{
+		quatResult = CSlerp::Slerp(quatA, quatB, ReadFromEditBox(_hwnd, IDC_EDIT9));
+		mat4Result = quatResult.InducedMatrix();
+
+		WriteQuaternionResultantSlerp(_hwnd, _wparam);
+		WriteResultantSlerpMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return false;
+}
+
+void WriteQuaternionResultantSlerp(HWND& _hwnd, WPARAM& _wparam)
+{
+	WriteToEditBox(_hwnd, IDC_EDIT10, quatResult.GetX());
+	WriteToEditBox(_hwnd, IDC_EDIT11, quatResult.GetY());
+	WriteToEditBox(_hwnd, IDC_EDIT12, quatResult.GetZ());
+	WriteToEditBox(_hwnd, IDC_EDIT13, quatResult.GetW());
+}
+
+void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam)
+{
+	WriteToEditBox(_hwnd, IDC_EDIT34, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT35, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT36, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT37, mat4Result(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT38, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT39, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT40, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT41, mat4Result(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT42, mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT43, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT44, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT45, mat4Result(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT46, mat4Result(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(3, 3));
+}
+
+bool ProcessResultantTransformationMatrixInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	switch (LOWORD(_wparam))
+	{
+	case IDC_EDIT16:
+		mat4Result(0, 0) = ReadFromEditBox(_hwnd, IDC_EDIT16);
+		WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(0, 0));
+		return TRUE;
+
+	case IDC_EDIT18:
+		mat4Result(0, 1) = ReadFromEditBox(_hwnd, IDC_EDIT18);
+		WriteToEditBox(_hwnd, IDC_EDIT51, mat4Result(0, 1));
+		return TRUE;
+
+	case IDC_EDIT19:
+		mat4Result(0, 2) = ReadFromEditBox(_hwnd, IDC_EDIT19);
+		WriteToEditBox(_hwnd, IDC_EDIT55, mat4Result(0, 2));
+		return TRUE;
+
+	case IDC_EDIT20:
+		mat4Result(0, 3) = ReadFromEditBox(_hwnd, IDC_EDIT20);
+		WriteToEditBox(_hwnd, IDC_EDIT59, mat4Result(0, 3));
+		return TRUE;
+	
+	
+	case IDC_EDIT21:
+		mat4Result(1, 0) = ReadFromEditBox(_hwnd, IDC_EDIT21);
+		WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(1, 0));
+		return TRUE;
+
+	case IDC_EDIT22:
+		mat4Result(1, 1) = ReadFromEditBox(_hwnd, IDC_EDIT22);
+		WriteToEditBox(_hwnd, IDC_EDIT52, mat4Result(1, 1));
+		return TRUE;
+
+	case IDC_EDIT23:
+		mat4Result(1, 2) = ReadFromEditBox(_hwnd, IDC_EDIT23);
+		WriteToEditBox(_hwnd, IDC_EDIT56, mat4Result(1, 2));
+		return TRUE;
+
+	case IDC_EDIT8:
+		mat4Result(1, 3) = ReadFromEditBox(_hwnd, IDC_EDIT8);
+		WriteToEditBox(_hwnd, IDC_EDIT60, mat4Result(1, 3));
+		return TRUE;
+
+
+	case IDC_EDIT9:
+		mat4Result(2, 0) = ReadFromEditBox(_hwnd, IDC_EDIT9);
+		WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(2, 0));
+		return TRUE;
+
+	case IDC_EDIT10:
+		mat4Result(2, 1) = ReadFromEditBox(_hwnd, IDC_EDIT10);
+		WriteToEditBox(_hwnd, IDC_EDIT53, mat4Result(2, 1));
+		return TRUE;
+
+	case IDC_EDIT11:
+		mat4Result(2, 2) = ReadFromEditBox(_hwnd, IDC_EDIT11);
+		WriteToEditBox(_hwnd, IDC_EDIT57, mat4Result(2, 2));
+		return TRUE;
+
+	case IDC_EDIT12:
+		mat4Result(2, 3) = ReadFromEditBox(_hwnd, IDC_EDIT12);
+		WriteToEditBox(_hwnd, IDC_EDIT61, mat4Result(2, 3));
+		return TRUE;
+
+
+	case IDC_EDIT24:
+		mat4Result(3, 0) = ReadFromEditBox(_hwnd, IDC_EDIT24);
+		WriteToEditBox(_hwnd, IDC_EDIT50, mat4Result(3, 0));
+		return TRUE;
+
+	case IDC_EDIT25:
+		mat4Result(3, 1) = ReadFromEditBox(_hwnd, IDC_EDIT25);
+		WriteToEditBox(_hwnd, IDC_EDIT54, mat4Result(3, 1));
+		return TRUE;
+
+	case IDC_EDIT26:
+		mat4Result(3, 2) = ReadFromEditBox(_hwnd, IDC_EDIT26);
+		WriteToEditBox(_hwnd, IDC_EDIT58, mat4Result(3, 2));
+		return TRUE;
+
+	case IDC_EDIT27:
+		mat4Result(3, 3) = ReadFromEditBox(_hwnd, IDC_EDIT27);
+		WriteToEditBox(_hwnd, IDC_EDIT62, mat4Result(3, 3));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessScaleTransformationInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON4)
+	{
+		mat4Result *= CTransformation::Scale
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT1),
+			ReadFromEditBox(_hwnd, IDC_EDIT2),
+			ReadFromEditBox(_hwnd, IDC_EDIT3)
+		);
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessTranslateTransformationInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON15)
+	{
+		mat4Result *= CTransformation::Translation
+		(
+			ReadFromEditBox(_hwnd, IDC_EDIT4),
+			ReadFromEditBox(_hwnd, IDC_EDIT5),
+			ReadFromEditBox(_hwnd, IDC_EDIT6)
+		);
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessRotateTransformationInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON16)
+	{
+		unsigned int uAxisOfRotation = 0;
+		if (IsDlgButtonChecked(_hwnd, IDC_RADIO1)) { uAxisOfRotation = 0; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO2)) { uAxisOfRotation = 1; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO3)) { uAxisOfRotation = 2; }
+
+		mat4Result *= CTransformation::EulerRotation(uAxisOfRotation, ReadFromEditBox(_hwnd, IDC_EDIT13));
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+bool ProcessProjectTransformationInput(HWND& _hwnd, WPARAM& _wparam)
+{
+	if (_wparam == IDC_BUTTON17)
+	{
+		unsigned int uAxisOfProjection = 0;
+		if (IsDlgButtonChecked(_hwnd, IDC_RADIO4)) { uAxisOfProjection = 0; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO5)) { uAxisOfProjection = 1; }
+		else if (IsDlgButtonChecked(_hwnd, IDC_RADIO6)) { uAxisOfProjection = 2; }
+
+		mat4Result *= CTransformation::Projection(uAxisOfProjection, ReadFromEditBox(_hwnd, IDC_EDIT15));
+		WriteResultantTransformationMatrix(_hwnd, _wparam);
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void WriteResultantTransformationMatrix(HWND& _hwnd, WPARAM& _wparam)
+{
+	//Column-Major Format
+	WriteToEditBox(_hwnd, IDC_EDIT16, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT18, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT19, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT20, mat4Result(0, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT21, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT22, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT23, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT8,  mat4Result(1, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT9,  mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT10, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT11, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT12, mat4Result(2, 3));
+
+	WriteToEditBox(_hwnd, IDC_EDIT24, mat4Result(3, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT25, mat4Result(3, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT26, mat4Result(3, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT27, mat4Result(3, 3));
+
+	//Row-Major Format
+	WriteToEditBox(_hwnd, IDC_EDIT47, mat4Result(0, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT48, mat4Result(1, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT49, mat4Result(2, 0));
+	WriteToEditBox(_hwnd, IDC_EDIT50, mat4Result(3, 0));
+
+	WriteToEditBox(_hwnd, IDC_EDIT51, mat4Result(0, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT52, mat4Result(1, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT53, mat4Result(2, 1));
+	WriteToEditBox(_hwnd, IDC_EDIT54, mat4Result(3, 1));
+
+	WriteToEditBox(_hwnd, IDC_EDIT55, mat4Result(0, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT56, mat4Result(1, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT57, mat4Result(2, 2));
+	WriteToEditBox(_hwnd, IDC_EDIT58, mat4Result(3, 2));
+
+	WriteToEditBox(_hwnd, IDC_EDIT59, mat4Result(0, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT60, mat4Result(1, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT61, mat4Result(2, 3));
+	WriteToEditBox(_hwnd, IDC_EDIT62, mat4Result(3, 3));
+}
+>>>>>>> Stashed changes

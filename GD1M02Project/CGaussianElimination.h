@@ -88,7 +88,7 @@ public:
         {
             // Initialize maximum value and index for pivot
             int i_max = k;
-            int v_max = m_Matrix[i_max][k];
+            int v_max = (int)m_Matrix[i_max][k];
 
             /* find greater amplitude for pivot if any */
             for (int i = k + 1; i < 3; i++)
