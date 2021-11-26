@@ -24,12 +24,9 @@
 // Local Includes
 #include "CMatrix4.h"
 #include "CQuaternion.h"
-<<<<<<< Updated upstream
-=======
 #include "CGaussianElimination.h"
 #include "CSlerp.h"
 #include "CTransformation.h"
->>>>>>> Stashed changes
 
 void MakeWindow(HWND& hwnd, HINSTANCE& _hInstance);
 void InitHWND(WNDCLASSEX& winclass, HINSTANCE& _hInstance);
@@ -57,9 +54,9 @@ bool ProcessMatrixBInverse(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessMatrixAInverse(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessMatrixScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
 
-void WriteResultantMatrixValues(HWND& _hwnd, WPARAM& _wparam);
-void WriteBMatrixValues(HWND& _hwnd, WPARAM& _wparam);
-void WriteAMatrixValues(HWND& _hwnd, WPARAM& _wparam);
+void WriteResultantMatrix(HWND& _hwnd, WPARAM& _wparam);
+void WriteBMatrix(HWND& _hwnd, WPARAM& _wparam);
+void WriteAMatrix(HWND& _hwnd, WPARAM& _wparam);
 
 //QuaternionDlgProc Functions
 bool ProcessQuaternionAInput(HWND& _hwnd, WPARAM& _wparam);
@@ -79,9 +76,31 @@ bool ProcessQuaternionBInverse(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessQuaternionAScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
 bool ProcessQuaternionBScalarMultiplication(HWND& _hwnd, WPARAM& _wparam);
 
-void WriteResultantQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
-void WriteBQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
-void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam);
+void WriteResultantQuaternion(HWND& _hwnd, WPARAM& _wparam);
+void WriteBQuaternion(HWND& _hwnd, WPARAM& _wparam);
+void WriteAQuaternion(HWND& _hwnd, WPARAM& _wparam);
+
+//Gaussian Elimination Functions
+bool ProcessGEInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGEMultiplyInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGESwapInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessGEAdditionInput(HWND& _hwnd, WPARAM& _wparam);
+void CheckEchelonForm(HWND& _hwnd);
+
+void WriteGEValues(HWND& _hwnd, WPARAM& _wparam);
+
+//Slerp Functions
+bool ProcessQuaternionASlerpInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessQuaternionBSlerpInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessQuaternionResultantSlerpInput(HWND& _hwnd, WPARAM& _wparam);
+
+bool ProcessSlerpInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInducedMatrixAInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInducedMatrixBInput(HWND& _hwnd, WPARAM& _wparam);
+bool ProcessInducedSlerpMatrixInput(HWND& _hwnd, WPARAM& _wparam);
+
+void WriteQuaternionResultantSlerp(HWND& _hwnd, WPARAM& _wparam);
+void WriteResultantSlerpMatrix(HWND& _hwnd, WPARAM& _wparam);
 
 //Transformation Functions
 bool ProcessResultantTransformationMatrixInput(HWND& _hwnd, WPARAM& _wparam);
@@ -100,6 +119,7 @@ HWND g_hDlgMatrix, g_hDlgTransformation, g_hDlgGaussian, g_hDlgQuaternion, g_hDl
 // Data Used
 CMatrix4 mat4A, mat4B, mat4Result;
 CQuaternion quatA, quatB, quatResult;
+CGaussianElimination geMatrix;
 
 LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
@@ -143,33 +163,38 @@ LRESULT CALLBACK WindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 		case ID_CALCULATOR_MATRIX:
 		{
 			ShowWindow(g_hDlgMatrix, SW_SHOWNORMAL);
+			mat4A.SetToZero();
+			mat4B.SetToZero();
+			mat4Result.SetToZero();
 			break;
 		}
 		case ID_CALCULATOR_TRANSFORMATION:
 		{
 			ShowWindow(g_hDlgTransformation, SW_SHOWNORMAL);
-<<<<<<< Updated upstream
-=======
 			mat4Result.SetToIdentity();
->>>>>>> Stashed changes
 			break;
 		}
-		// Open Matrix Dialog
 		case ID_CALCULATOR_GAUSSIAN:
 		{
 			ShowWindow(g_hDlgGaussian, SW_SHOWNORMAL);
+			geMatrix.SetToZero();
 			break;
 		}
-		// Open Gaussian Dialog
 		case ID_CALCULATOR_QUATERNION:
 		{
 			ShowWindow(g_hDlgQuaternion, SW_SHOWNORMAL);
+			quatA.SetToZero();
+			quatB.SetToZero();
+			quatResult.SetToZero();
 			break;
 		}
-		// Open Quaternion Dialog
 		case ID_CALCULATOR_SLERP:
 		{
 			ShowWindow(g_hDlgSLERP, SW_SHOWNORMAL);
+			quatA.SetToZero();
+			quatB.SetToZero();
+			quatResult.SetToZero();
+			mat4Result.SetToZero();
 			break;
 		}
 		}
@@ -224,6 +249,10 @@ BOOL CALLBACK MatrixDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lpara
 
 		return TRUE;
 	}
+	//case WM_ENABLE:
+	//{
+	//	int i = 0;
+	//}
 	case WM_CLOSE:
 	{
 		ShowWindow(_hwnd, SW_HIDE);
@@ -261,18 +290,18 @@ BOOL CALLBACK TransformationDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARA
 }
 BOOL CALLBACK GaussianDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
-
 	switch (_msg)
 	{
 	case WM_COMMAND:
 	{
-		//switch (LOWORD(_wparam))
-		//{
-		//
-		//default:
-		//	break;
-		//}
-
+		//Process Input Fields
+		ProcessGEInput(_hwnd, _wparam);
+	
+		//Process Operations
+		if (ProcessGEAdditionInput(_hwnd, _wparam)) {}
+		else if (ProcessGESwapInput(_hwnd, _wparam)) {}
+		else if (ProcessGEMultiplyInput(_hwnd, _wparam)) {}
+	
 		return TRUE;
 	}
 	case WM_CLOSE:
@@ -326,12 +355,16 @@ BOOL CALLBACK SLERPDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam
 	{
 	case WM_COMMAND:
 	{
-		//switch (LOWORD(_wparam))
-		//{
-		//
-		//default:
-		//	break;
-		//}
+		//Process Input Fields
+		if (ProcessQuaternionASlerpInput(_hwnd, _wparam)) {}
+		else if (ProcessQuaternionBSlerpInput(_hwnd, _wparam)) {}
+		else if (ProcessQuaternionResultantSlerpInput(_hwnd, _wparam)) {}
+
+		//Process Operations
+		if (ProcessSlerpInput(_hwnd, _wparam)) {}
+		else if (ProcessInducedMatrixAInput(_hwnd, _wparam)) {}
+		else if (ProcessInducedMatrixBInput(_hwnd, _wparam)) {}
+		else if (ProcessInducedSlerpMatrixInput(_hwnd, _wparam)) {}
 
 		return TRUE;
 	}
@@ -343,7 +376,7 @@ BOOL CALLBACK SLERPDlgProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam
 	}
 	return FALSE;
 }
-//
+//0
 
 //
 // int Main() Equivilent
@@ -648,7 +681,7 @@ bool ProcessMatrixAdditionInput(HWND& _hwnd, WPARAM& _wparam)
 	{
 		mat4Result = mat4A + mat4B;
 
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 		return TRUE;
 	}
 
@@ -660,7 +693,7 @@ bool ProcessMatrixMinusInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDCANCEL)
 	{
 		mat4Result = mat4A - mat4B;
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -673,7 +706,7 @@ bool ProcessMatrixMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDOK2)
 	{
 		mat4Result = mat4A * mat4B;
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -686,7 +719,7 @@ bool ProcessMatrixInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDOK5)
 	{
 		mat4Result = mat4B * mat4A;
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -700,7 +733,7 @@ bool ProcessMatrixBToIdentity(HWND& _hwnd, WPARAM& _wparam)
 	{
 		mat4B.SetToIdentity();
 
-		WriteBMatrixValues(_hwnd, _wparam);
+		WriteBMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -714,7 +747,7 @@ bool ProcessMatrixBTranspose(HWND& _hwnd, WPARAM& _wparam)
 	{
 		mat4B.Transpose();
 
-		WriteBMatrixValues(_hwnd, _wparam);
+		WriteBMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -728,7 +761,7 @@ bool ProcessMatrixATranspose(HWND& _hwnd, WPARAM& _wparam)
 	{
 		mat4A.Transpose();
 
-		WriteAMatrixValues(_hwnd, _wparam);
+		WriteAMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -742,7 +775,7 @@ bool ProcessMatrixAToIdentity(HWND& _hwnd, WPARAM& _wparam)
 	{
 		mat4A.SetToIdentity();
 
-		WriteAMatrixValues(_hwnd, _wparam);
+		WriteAMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -779,7 +812,7 @@ bool ProcessMatrixBInverse(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDCANCEL3)
 	{
 		mat4Result = mat4B.LUDCInverse();
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -792,7 +825,7 @@ bool ProcessMatrixAInverse(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDCANCEL2)
 	{
 		mat4Result = mat4A.LUDCInverse();
-		WriteResultantMatrixValues(_hwnd, _wparam);
+		WriteResultantMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -807,14 +840,14 @@ bool ProcessMatrixScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 	case IDOK6:
 	{
 		mat4A = mat4A * ReadFromEditBox(_hwnd, IDC_EDIT_AScaled);
-		WriteAMatrixValues(_hwnd, _wparam);
+		WriteAMatrix(_hwnd, _wparam);
 
 		return TRUE;
 	}
 	case IDOK10:
 	{
 		mat4B = mat4B * ReadFromEditBox(_hwnd, IDC_EDIT_BScaled);
-		WriteBMatrixValues(_hwnd, _wparam);
+		WriteBMatrix(_hwnd, _wparam);
 		
 		return TRUE;
 	}
@@ -823,7 +856,7 @@ bool ProcessMatrixScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 	}
 }
 
-void WriteResultantMatrixValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteResultantMatrix(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT_R11, mat4Result(0, 0));
 	WriteToEditBox(_hwnd, IDC_EDIT_R12, mat4Result(0, 1));
@@ -843,7 +876,7 @@ void WriteResultantMatrixValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT_R44, mat4Result(3, 3));
 }
 
-void WriteBMatrixValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteBMatrix(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT_B11, mat4B(0, 0));
 	WriteToEditBox(_hwnd, IDC_EDIT_B12, mat4B(0, 1));
@@ -863,7 +896,7 @@ void WriteBMatrixValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT_B44, mat4B(3, 3));
 }
 
-void WriteAMatrixValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteAMatrix(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT_A11, mat4A(0, 0));
 	WriteToEditBox(_hwnd, IDC_EDIT_A12, mat4A(0, 1));
@@ -946,7 +979,7 @@ bool ProcessQuaternionAdditionInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON1)
 	{
 		quatResult = quatA + quatB;
-		WriteResultantQuaternionValues(_hwnd, _wparam);
+		WriteResultantQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -959,7 +992,7 @@ bool ProcessQuaternionMinusInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON5)
 	{
 		quatResult = quatA - quatB;
-		WriteResultantQuaternionValues(_hwnd, _wparam);
+		WriteResultantQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -972,7 +1005,7 @@ bool ProcessQuaternionInverseMinusInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON6)
 	{
 		quatResult = quatB - quatA;
-		WriteResultantQuaternionValues(_hwnd, _wparam);
+		WriteResultantQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -985,7 +1018,7 @@ bool ProcessQuaternionMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON2)
 	{
 		quatResult = quatA * quatB;
-		WriteResultantQuaternionValues(_hwnd, _wparam);
+		WriteResultantQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -998,7 +1031,7 @@ bool ProcessQuaternionInverseMultiplyInput(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON7)
 	{
 		quatResult = quatB * quatA;
-		WriteResultantQuaternionValues(_hwnd, _wparam);
+		WriteResultantQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1023,7 +1056,7 @@ bool ProcessQuaternionAConjugate(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON3)
 	{
 		quatA = quatA.GetConjugate();
-		WriteAQuaternionValues(_hwnd, _wparam);
+		WriteAQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1036,7 +1069,7 @@ bool ProcessQuaternionBConjugate(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON9)
 	{
 		quatB = quatB.GetConjugate();
-		WriteBQuaternionValues(_hwnd, _wparam);
+		WriteBQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1073,7 +1106,7 @@ bool ProcessQuaternionAInverse(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON12)
 	{
 		quatA = quatA.GetInverse();
-		WriteAQuaternionValues(_hwnd, _wparam);
+		WriteAQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1086,7 +1119,7 @@ bool ProcessQuaternionBInverse(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON13)
 	{
 		quatB = quatB.GetInverse();
-		WriteBQuaternionValues(_hwnd, _wparam);
+		WriteBQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1099,7 +1132,7 @@ bool ProcessQuaternionAScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON14)
 	{
 		quatA *= ReadFromEditBox(_hwnd, IDC_EDIT9);
-		WriteAQuaternionValues(_hwnd, _wparam);
+		WriteAQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1112,7 +1145,7 @@ bool ProcessQuaternionBScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 	if (_wparam == IDC_BUTTON15)
 	{
 		quatB *= ReadFromEditBox(_hwnd, IDC_EDIT9);
-		WriteBQuaternionValues(_hwnd, _wparam);
+		WriteBQuaternion(_hwnd, _wparam);
 
 		return TRUE;
 	}
@@ -1120,7 +1153,7 @@ bool ProcessQuaternionBScalarMultiplication(HWND& _hwnd, WPARAM& _wparam)
 	return FALSE;
 }
 
-void WriteResultantQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteResultantQuaternion(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT10, quatResult.GetX());
 	WriteToEditBox(_hwnd, IDC_EDIT11, quatResult.GetY());
@@ -1128,7 +1161,7 @@ void WriteResultantQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT13, quatResult.GetW());
 }
 
-void WriteBQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteBQuaternion(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT5, quatB.GetX());
 	WriteToEditBox(_hwnd, IDC_EDIT6, quatB.GetY());
@@ -1136,15 +1169,12 @@ void WriteBQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT8, quatB.GetW());
 }
 
-void WriteAQuaternionValues(HWND& _hwnd, WPARAM& _wparam)
+void WriteAQuaternion(HWND& _hwnd, WPARAM& _wparam)
 {
 	WriteToEditBox(_hwnd, IDC_EDIT1, quatA.GetX());
 	WriteToEditBox(_hwnd, IDC_EDIT2, quatA.GetY());
 	WriteToEditBox(_hwnd, IDC_EDIT3, quatA.GetZ());
 	WriteToEditBox(_hwnd, IDC_EDIT4, quatA.GetW());
-<<<<<<< Updated upstream
-}
-=======
 }
 
 bool ProcessGEInput(HWND& _hwnd, WPARAM& _wparam)
@@ -1678,4 +1708,3 @@ void WriteResultantTransformationMatrix(HWND& _hwnd, WPARAM& _wparam)
 	WriteToEditBox(_hwnd, IDC_EDIT61, mat4Result(2, 3));
 	WriteToEditBox(_hwnd, IDC_EDIT62, mat4Result(3, 3));
 }
->>>>>>> Stashed changes

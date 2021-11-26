@@ -232,9 +232,9 @@ public:
         return *this;
     }
 
-    inline float& operator () (int _i, int _jumn)
+    inline float& operator () (int _i, int _j)
     {
-        return m_fData[_i][_jumn];
+        return m_fData[_i][_j];
     }
 
     inline CMatrix4 operator + (CMatrix4 _rhs)
